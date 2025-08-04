@@ -1,0 +1,46 @@
+baseURL: "https://example.org/"
+languageCode: "en-us"
+title: "Miha's Blog"
+theme: "PaperMod"
+
+params:
+  homeInfoParams:
+    Title: "Hi there 👋, I'm Miha"
+    Content: |
+      👨‍💻 I'm a **DevOps Engineer**.
+
+      🌍 Welcome to my little corner of the internet!
+
+      🎈 This blog shares my thoughts, side projects, and lessons learned along the journey.
+
+      📫  Feel free to connect via the links below:
+
+
+  socialIcons:
+    - name: "GitHub"
+      url: "https://github.com/HaPhanBaoMinh"
+    - name: "LinkedIn"
+      url: "https://www.linkedin.com/in/ha-phan-bao-minh"
+    - name: "Email"
+      url: "https://mail.google.com/mail/?view=cm&to=haphanbaominh.dev@gmail.com"
+    - name: "X"
+      url: "https://x.com/Min_Ha_129"
+
+# Navigation
+menu:
+  main:
+    - identifier: home
+      name: Home
+      url: /
+      weight: 1
+
+    - identifier: blog
+      name: Blog
+      url: /posts/
+      weight: 2
+
+    - identifier: projects
+      name: Projects
+      url: /projects/
+      weight: 4
+
