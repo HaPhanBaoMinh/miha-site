@@ -8,6 +8,8 @@
   </url><url>
     <loc>http://localhost:1313/miha-site/</loc>
   </url><url>
+    <loc>http://localhost:1313/miha-site/search/</loc>
+  </url><url>
     <loc>http://localhost:1313/miha-site/tags/</loc>
   </url>
 </urlset>
