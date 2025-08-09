@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Tags on Miha&#39;s Blog</title>
+    <title>Tags on MinhBoo&#39;s Blog</title>
     <link>http://localhost:1313/miha-site/tags/</link>
-    <description>Recent content in Tags on Miha&#39;s Blog</description>
+    <description>Recent content in Tags on MinhBoo&#39;s Blog</description>
     <generator>Hugo -- 0.148.2</generator>
     <language>en-us</language>
+    <lastBuildDate>Sat, 09 Aug 2025 10:00:00 +0700</lastBuildDate>
     <atom:link href="http://localhost:1313/miha-site/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Devops</title>
+      <link>http://localhost:1313/miha-site/tags/devops/</link>
+      <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/devops/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker</title>
+      <link>http://localhost:1313/miha-site/tags/docker/</link>
+      <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/docker/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Linux</title>
+      <link>http://localhost:1313/miha-site/tags/linux/</link>
+      <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/linux/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

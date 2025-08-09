@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/miha-site/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=miha-site/livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Docker Containers: What the heck is really going on under the hood? | MinhBoo&#39;s Blog</title>
+<meta name="keywords" content="linux, docker, devops">
+<meta name="description" content="Ever wondered what happens when you run a Docker container? Let&rsquo;s dive into the Linux magic behind namespaces, cgroups, and overlay filesystems that make it all possible.">
+<meta name="author" content="MinhBoo">
+<link rel="canonical" href="http://localhost:1313/miha-site/blog/docker_container_001/">
+<link crossorigin="anonymous" href="/miha-site/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/miha-site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/miha-site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/miha-site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/miha-site/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/miha-site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/miha-site/blog/docker_container_001/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/miha-site/" accesskey="h" title="MinhBoo&#39;s Blog (Alt + H)">MinhBoo&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/miha-site/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/miha-site/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/miha-site/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/miha-site/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Docker Containers: What the heck is really going on under the hood?
+    </h1>
+    <div class="post-meta"><span title='2025-08-09 10:00:00 +0700 +07'>August 9, 2025</span>&nbsp;·&nbsp;MinhBoo
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="1-why-should-you-care">1. Why should you care?<a hidden class="anchor" aria-hidden="true" href="#1-why-should-you-care">#</a></h2>
+<p>You type:</p>
+<pre tabindex="0"><code>docker run nginx
+</code></pre><p>&hellip;and somehow, a <strong>tiny isolated world</strong> pops into existence — with its own filesystem, processes, hostname, and even IP address.</p>
+<p>But ever wondered why it works? Let’s peek under the hood — cgroups, namespaces, image layers, and all the nerdy stuff you pretend to understand.</p>
+<hr>
+<h2 id="2-the-magic-ingredient">2. The magic ingredient<a hidden class="anchor" aria-hidden="true" href="#2-the-magic-ingredient">#</a></h2>
+<p>When Docker “creates” a container, it’s really:</p>
+<ul>
+<li>Starting a process on the host.</li>
+<li>Wrapping that process in <strong>namespaces</strong> (to hide other stuff).</li>
+<li>Putting it inside <strong>cgroups</strong> (to limit resources).</li>
+<li>Giving it a filesystem view (via mount namespaces &amp; overlay filesystems).</li>
+</ul>
+<p>Let’s see this in action.</p>
+<hr>
+<h2 id="3-namespaces--_what-can-you-see">3. Namespaces — _What can you see?<a hidden class="anchor" aria-hidden="true" href="#3-namespaces--_what-can-you-see">#</a></h2>
+<p>Think of your computer as a giant open space. Without rules, every program can see:</p>
+<ul>
+<li>All files</li>
+<li>All processes</li>
+<li>All networks
+<img alt="docker_container_001" loading="lazy" src="/miha-site/blog/docker_container_001/images/01.png"></li>
+</ul>
+<p>That’s like living in a house <strong>with no walls</strong>.</p>
+<p>Now imagine building invisible walls around each app. Each app now thinks it&rsquo;s the only one living in the house. That invisible walls is <em><strong>namespaces</strong></em>
+<img alt="docker_container_001" loading="lazy" src="/miha-site/blog/docker_container_001/images/02.png"></p>
+<h4 id="tldr-namespaces">TL;DR Namespaces<a hidden class="anchor" aria-hidden="true" href="#tldr-namespaces">#</a></h4>
+<ul>
+<li><strong>Namespaces</strong> = isolation of <em>what you can see</em>.</li>
+<li>MNT namespaces make each container think it owns <code>/</code>.</li>
+<li>Other namespaces isolate PID, NET, IPC, UTS, USER, and TIME.</li>
+</ul>
+<hr>
+<h3 id="31-spin-up-a-container">3.1 Spin up a container<a hidden class="anchor" aria-hidden="true" href="#31-spin-up-a-container">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --name nginx -d nginx
+</span></span></code></pre></div><hr>
+<h3 id="32-find-its-main-process-pid">3.2 Find its main process PID<a hidden class="anchor" aria-hidden="true" href="#32-find-its-main-process-pid">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker inspect --format <span style="color:#e6db74">&#39;{{.State.Pid}}&#39;</span> nginx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">240649</span>
+</span></span></code></pre></div><p>Why?<br>
+This PID is the <strong>main process</strong> running inside the container, but from the host’s point of view.</p>
+<hr>
+<h3 id="33-check-what-namespaces-a-container-is-using">3.3 Check what namespaces a container is using<a hidden class="anchor" aria-hidden="true" href="#33-check-what-namespaces-a-container-is-using">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ls -l /proc/240649/ns
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT: 
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">0</span> 
+</span></span><span style="display:flex;"><span>lrwxrwxrwx 1 root root 0 Aug  8 13:50 cgroup -&gt; <span style="color:#e6db74">&#39;cgroup:[4026531835]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 ipc -&gt; <span style="color:#e6db74">&#39;ipc:[4026532606]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:47 mnt -&gt; <span style="color:#e6db74">&#39;mnt:[4026532263]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:47 net -&gt; <span style="color:#e6db74">&#39;net:[4026532608]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 pid -&gt; <span style="color:#e6db74">&#39;pid:[4026532607]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 pid_for_children -&gt; <span style="color:#e6db74">&#39;pid:[4026532607]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 time -&gt; <span style="color:#e6db74">&#39;time:[4026531834]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 time_for_children -&gt; <span style="color:#e6db74">&#39;time:[4026531834]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 user -&gt; <span style="color:#e6db74">&#39;user:[4026531837]&#39;</span> lrwxrwxrwx 1 root root 0 Aug  8 13:50 uts -&gt; <span style="color:#e6db74">&#39;uts:[4026532264]&#39;</span>
+</span></span></code></pre></div><p>Cool, you can see all the namespaces this container process is attached to.  Each entry follows the pattern:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>&lt;namespace_type&gt; -&gt; <span style="color:#e6db74">&#39;&lt;namespace_type&gt;:[namespace_ID]&#39;</span>
+</span></span></code></pre></div><p>- <strong><code>namespace_type</code></strong> → which namespace we’re looking at (mnt, net, pid, etc.)
+- <strong><code>namespace_ID</code></strong> → the unique ID of that namespace in the kernel.
+- If two processes have the same ID for a given type, they share that namespace.</p>
+<p>Types include:</p>
+<ul>
+<li><code>mnt</code> — Filesystem view</li>
+<li><code>pid</code> — Process IDs</li>
+<li><code>net</code> — Network interfaces</li>
+<li><code>ipc</code> — Inter-process communication</li>
+<li><code>uts</code> — Hostname/domain</li>
+<li><code>user</code> — User/group IDs</li>
+<li><code>time</code> — System clocks</li>
+</ul>
+<blockquote>
+<p><strong>Tip</strong>: If two processes share the same namespace ID for a type, they share that namespace</p></blockquote>
+<hr>
+<h3 id="34-peek-at-the-mnt-mount-namespace">3.4 Peek at the MNT (mount) namespace<a hidden class="anchor" aria-hidden="true" href="#34-peek-at-the-mnt-mount-namespace">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mnt -&gt; <span style="color:#e6db74">&#39;mnt:[4026532263]&#39;</span>
+</span></span></code></pre></div><p>You can exec into the container and see that the container has its <em><strong>own filesystem</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec -it nginx ls / 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT: 
+</span></span><span style="display:flex;"><span>bin  boot  dev  docker etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin ...
+</span></span></code></pre></div><p>Looks like a complete Linux filesystem… but it’s just a <em>mapped</em> folder on the host.
+<img alt="docker_container_001" loading="lazy" src="/miha-site/blog/docker_container_001/images/03.png"></p>
+<hr>
+<h3 id="35-where-is-it-really-stored">3.5 Where is it really stored?<a hidden class="anchor" aria-hidden="true" href="#35-where-is-it-really-stored">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Get container&#39;s ID </span>
+</span></span><span style="display:flex;"><span>docker inspect --format <span style="color:#e6db74">&#39;{{.Id}}&#39;</span> nginx 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT: 
+</span></span><span style="display:flex;"><span>967db174494915398f42a23819eda2a1e4fb72fb2879ae70a87d348c5d1eebfb 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Find the container’s root filesystem on the host </span>
+</span></span><span style="display:flex;"><span>docker inspect --format <span style="color:#e6db74">&#39;{{.GraphDriver.Data.MergedDir}}&#39;</span>  967db174494915398f42a23819eda2a1e4fb72fb2879ae70a87d348c5d1eebfb 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT: 
+</span></span><span style="display:flex;"><span>/var/lib/docker/overlay2/a56aaad745c20bba.../merged 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># List all filesystem  </span>
+</span></span><span style="display:flex;"><span>sudo ls /var/lib/docker/overlay2/a56aaad745c20bba.../merged
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span>&lt;empty&gt;
+</span></span></code></pre></div><p>If you <code>ls</code> that folder from your normal shell, it might look empty.<br>
+Why that?<br>
+You’re in the wrong <strong>mount namespace</strong>.</p>
+<hr>
+<h3 id="36-sneak-into-dockers-mount-namespace">3.6 Sneak into Docker’s mount namespace<a hidden class="anchor" aria-hidden="true" href="#36-sneak-into-dockers-mount-namespace">#</a></h3>
+<p>Docker keeps these mounts in <code>dockerd</code>’s private mount namespace.
+To see them, you need to <em>sneak in</em>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Enter dockerd&#39;s mount namespace </span>
+</span></span><span style="display:flex;"><span>sudo nsenter --target <span style="color:#66d9ef">$(</span>pgrep -x dockerd | head -n1<span style="color:#66d9ef">)</span> --mount -- bash 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Now list the container&#39;s root filesystem </span>
+</span></span><span style="display:flex;"><span>ls -la /var/lib/docker/overlay2/a56aaad745c20bba.../merged 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT: 
+</span></span><span style="display:flex;"><span>bin  boot  dev  docker etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin ...
+</span></span></code></pre></div><p>Boom — now you see what the container sees as <code>/</code>.</p>
+<hr>
+<h2 id="4-cgroups--how-much-can-you-use">4. Cgroups — <em>How much can you use?</em><a hidden class="anchor" aria-hidden="true" href="#4-cgroups--how-much-can-you-use">#</a></h2>
+<p>Namespaces hide stuff.<br>
+<strong>Cgroups</strong> control <em>how much</em> you get to use.</p>
+<p>They’re like a bouncer at a party:</p>
+<ul>
+<li>“You, only 50% CPU.”</li>
+<li>“You, max 256 MB RAM.”</li>
+<li>“You… no network for you.”
+<img alt="docker_container_001" loading="lazy" src="/miha-site/blog/docker_container_001/images/04.png"></li>
+</ul>
+<h4 id="tldr-cgroups">TL;DR Cgroups<a hidden class="anchor" aria-hidden="true" href="#tldr-cgroups">#</a></h4>
+<ul>
+<li><strong>Cgroups</strong> = limit <em>how much</em> resources a container can consume.</li>
+<li>Docker writes these limits to the cgroup filesystem.</li>
+<li>The kernel enforces them automatically.
+<img alt="docker_container_001" loading="lazy" src="/miha-site/blog/docker_container_001/images/05.png"></li>
+</ul>
+<hr>
+<h3 id="41-create-a-limited-container">4.1 Create a limited container<a hidden class="anchor" aria-hidden="true" href="#41-create-a-limited-container">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -m 256m --cpus<span style="color:#f92672">=</span>0.5 nginx
+</span></span></code></pre></div><p>This says:</p>
+<ul>
+<li>Max memory: <strong>256 MB</strong></li>
+<li>Max CPU: <strong>0.5 cores</strong></li>
+</ul>
+<hr>
+<h3 id="42-find-the-cgroup-path">4.2 Find the cgroup path<a hidden class="anchor" aria-hidden="true" href="#42-find-the-cgroup-path">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Find its main process PID</span>
+</span></span><span style="display:flex;"><span>docker inspect --format <span style="color:#e6db74">&#39;{{.State.Pid}}&#39;</span> nginx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1984</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># List cgroup memberships for that PID</span>
+</span></span><span style="display:flex;"><span>cat /proc/1984/cgroup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span>0::/system.slice/docker-563720d58a5bdc46e6ce27d340cbf2cfe301ecaba2b67951da3770b6ac76cc4a.scope
+</span></span></code></pre></div><ul>
+<li><strong><code>0</code></strong> → cgroup v2 unified hierarchy.</li>
+<li><strong>system.slice</strong> → managed by systemd.</li>
+<li>**docker.docker_id.scope → group for this container’s processes.</li>
+</ul>
+<hr>
+<h3 id="43-see-the-actual-limits">4.3 See the actual limits<a hidden class="anchor" aria-hidden="true" href="#43-see-the-actual-limits">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd /sys/fs/cgroup/system.slice/docker-&lt;container_id&gt;.scope
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span>cpu.max  memory.max  memory.min  cpu.idle ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat cpu.max
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTOUT:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">50000</span> <span style="color:#ae81ff">100000</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 50000 100000  → 50ms of CPU time every 100ms = 0.5 cores</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat memory.max
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">268435456</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 268435456 bytes = 256 MB</span>
+</span></span></code></pre></div><hr>
+<h2 id="5-wrapping-it-all-up">5. Wrapping It All Up<a hidden class="anchor" aria-hidden="true" href="#5-wrapping-it-all-up">#</a></h2>
+<p>We just pulled back the curtain on what actually happens when you run a Docker container:</p>
+<ul>
+<li>
+<p><strong>Namespaces</strong> → Decide <em>what you can see</em>.</p>
+<ul>
+<li>Your container gets its own view of processes, filesystems, networks, etc.</li>
+<li>Like invisible walls separating roommates in the same house.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cgroups</strong> → Decide <em>how much you can use</em>.</p>
+<ul>
+<li>Control CPU, memory, PIDs, and more.</li>
+<li>Like a bouncer making sure no one eats <em>all</em> the snacks.</li>
+</ul>
+</li>
+<li>
+<p><strong>Overlay Filesystem &amp; Mount Namespaces</strong> → Give the container its own “root” directory.</p>
+<ul>
+<li>Looks like a complete OS, but it’s just a mapped folder on the host.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="key-takeaways">Key Takeaways<a hidden class="anchor" aria-hidden="true" href="#key-takeaways">#</a></h3>
+<ol>
+<li>Docker containers are <strong>just processes</strong> with special kernel features applied.</li>
+<li>You can <strong>inspect namespaces</strong> via <code>/proc/&lt;PID&gt;/ns</code> to see isolation in action.</li>
+<li>You can <strong>inspect cgroups</strong> via <code>/sys/fs/cgroup</code> to see and adjust resource limits.</li>
+<li>The “magic” is <strong>inside the Linux kernel</strong>, not in Docker itself.</li>
+</ol>
+<hr>
+<p><strong>Final thought</strong>:<br>
+Next time someone says “containers are lightweight VMs,” you can smile knowingly — because you <em>actually</em> understand the Linux magic making it happen.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/miha-site/tags/linux/">Linux</a></li>
+      <li><a href="http://localhost:1313/miha-site/tags/docker/">Docker</a></li>
+      <li><a href="http://localhost:1313/miha-site/tags/devops/">Devops</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/miha-site/">MinhBoo&#39;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

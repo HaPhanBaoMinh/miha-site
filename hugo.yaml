@@ -1,11 +1,11 @@
 baseURL: "https://haphanbaominh.github.io/miha-site/"
 languageCode: "en-us"
-title: "Miha's Blog"
+title: "MinhBoo's Blog"
 theme: "PaperMod"
 
 params:
   homeInfoParams:
-    Title: "Hi there 👋, I'm Miha"
+    Title: "Hi there 👋, I'm MinhBoo"
     Content: |
       👨‍💻 I'm a **DevOps Engineer**.
 
