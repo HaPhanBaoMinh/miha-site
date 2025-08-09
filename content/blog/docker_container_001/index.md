@@ -19,8 +19,8 @@ cover:
 
 ## 1. Why should you care?
 
-You type:
-```
+When you run a Docker container, like this:
+```bash
 docker run nginx
 ```
 ...and somehow, a **tiny isolated world** pops into existence — with its own filesystem, processes, hostname, and even IP address.

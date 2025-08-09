@@ -134,9 +134,9 @@
 </div>
   </header> 
   <div class="post-content"><h2 id="1-why-should-you-care">1. Why should you care?<a hidden class="anchor" aria-hidden="true" href="#1-why-should-you-care">#</a></h2>
-<p>You type:</p>
-<pre tabindex="0"><code>docker run nginx
-</code></pre><p>&hellip;and somehow, a <strong>tiny isolated world</strong> pops into existence — with its own filesystem, processes, hostname, and even IP address.</p>
+<p>When you run a Docker container, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run nginx
+</span></span></code></pre></div><p>&hellip;and somehow, a <strong>tiny isolated world</strong> pops into existence — with its own filesystem, processes, hostname, and even IP address.</p>
 <p>But ever wondered why it works? Let’s peek under the hood — cgroups, namespaces, image layers, and all the nerdy stuff you pretend to understand.</p>
 <hr>
 <h2 id="2-the-magic-ingredient">2. The magic ingredient<a hidden class="anchor" aria-hidden="true" href="#2-the-magic-ingredient">#</a></h2>
