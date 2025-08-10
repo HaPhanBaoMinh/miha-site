@@ -81,7 +81,16 @@ sudo ls -l /proc/240649/ns
 
 OUTPUT: 
 total 0 
-lrwxrwxrwx 1 root root 0 Aug  8 13:50 cgroup -> 'cgroup:[4026531835]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 ipc -> 'ipc:[4026532606]' lrwxrwxrwx 1 root root 0 Aug  8 13:47 mnt -> 'mnt:[4026532263]' lrwxrwxrwx 1 root root 0 Aug  8 13:47 net -> 'net:[4026532608]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 pid -> 'pid:[4026532607]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 pid_for_children -> 'pid:[4026532607]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 time -> 'time:[4026531834]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 time_for_children -> 'time:[4026531834]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 user -> 'user:[4026531837]' lrwxrwxrwx 1 root root 0 Aug  8 13:50 uts -> 'uts:[4026532264]'
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 cgroup -> 'cgroup:[4026531835]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 ipc -> 'ipc:[4026532606]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:47 mnt -> 'mnt:[4026532263]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:47 net -> 'net:[4026532608]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 pid -> 'pid:[4026532607]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 pid_for_children -> 'pid:[4026532607]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 time -> 'time:[4026531834]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 time_for_children -> 'time:[4026531834]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 user -> 'user:[4026531837]' 
+lrwxrwxrwx 1 root root 0 Aug  8 13:50 uts -> 'uts:[4026532264]'
 ```
 Cool, you can see all the namespaces this container process is attached to.  Each entry follows the pattern:
 ```bash
