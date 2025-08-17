@@ -9,7 +9,7 @@
     <lastBuildDate>Sat, 16 Aug 2025 10:00:00 +0700</lastBuildDate>
     <atom:link href="http://localhost:42161/miha-site/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>GitOps with ArgoCD: Push Code, Not Panic</title>
+      <title>GitOps with ArgoCD: Push Code, Sync and Take a Coffee</title>
       <link>http://localhost:42161/miha-site/blog/blog_002/</link>
       <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
       <guid>http://localhost:42161/miha-site/blog/blog_002/</guid>

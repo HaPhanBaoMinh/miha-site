@@ -1,5 +1,5 @@
 ---
-title: "GitOps with ArgoCD: Push Code, Not Panic"
+title: "GitOps with ArgoCD: Push Code, Sync and Take a Coffee"
 description: "How to control your whole Kubernetes life with ArgoCD and ApplicationSet"
 author: "MinhBoo"
 date: 2025-08-16T10:00:00+07:00
