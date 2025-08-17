@@ -49,8 +49,4 @@ menu:
       url: /search/
       weight: 4
 
-outputs:
-  home:
-    - HTML
-    - RSS
-    - JSON 
+
