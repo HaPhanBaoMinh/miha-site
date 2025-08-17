@@ -52,7 +52,7 @@ This setup makes rollbacks effortless, history auditable, and collaboration smoo
 
 ![blog_002](images/03.png)
 
-## 4. Meet ArgoCD 🚀  
+## 4. Meet ArgoCD. 
 ArgoCD is a GitOps tool for Kubernetes.  
 
 It watches your Git repo and makes sure your cluster always matches it — no more drift, no more manual apply.  
