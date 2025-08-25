@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/miha-site/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=miha-site/livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Ship your app to the World: Share it through apt | MinhBoo&#39;s Blog</title>
+<meta name="keywords" content="linux, ubuntu, ppa, devops">
+<meta name="description" content="Tired of telling people to download .deb files? Learn how to package your app, upload it to Launchpad, and let anyone install it with just apt install.">
+<meta name="author" content="MinhBoo">
+<link rel="canonical" href="http://localhost:1313/miha-site/blog/blog_003/">
+<link crossorigin="anonymous" href="/miha-site/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/miha-site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/miha-site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/miha-site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/miha-site/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/miha-site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/miha-site/blog/blog_003/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/miha-site/" accesskey="h" title="MinhBoo&#39;s Blog (Alt + H)">MinhBoo&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/miha-site/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/miha-site/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/miha-site/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/miha-site/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Ship your app to the World: Share it through apt
+    </h1>
+    <div class="post-meta"><span title='2025-08-25 10:00:00 +0700 +07'>August 25, 2025</span>&nbsp;·&nbsp;MinhBoo
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="1-why-should-you-care">1. Why should you care?<a hidden class="anchor" aria-hidden="true" href="#1-why-should-you-care">#</a></h2>
+<p>You’ve built an awesome app — and now you want people to actually use it.
+But sharing source code or <code>.deb</code> files is inconvenient.</p>
+<p>Wouldn’t it be better if anyone could just type:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install awesome-app
+</span></span></code></pre></div><p>Publishing your app with <code>apt</code> makes that possible.</p>
+<h2 id="2-overview">2. Overview<a hidden class="anchor" aria-hidden="true" href="#2-overview">#</a></h2>
+<h3 id="21-how-apt-install-work-">2.1 How <code>apt install</code> work ?<a hidden class="anchor" aria-hidden="true" href="#21-how-apt-install-work-">#</a></h3>
+<p>When you run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install awesome-app
+</span></span></code></pre></div><p><code>apt</code> does a few things behind the scenes:</p>
+<ol>
+<li>Reads your sources list
+<ul>
+<li>It looks at all repositories in <code>/etc/apt/sources.list</code> and <code>/etc/apt/sources.list.d/</code>.</li>
+<li>If you added a <code>PPA</code>, it’s included here.</li>
+</ul>
+</li>
+<li>Fetches the package index
+<ul>
+<li>From each repo, apt downloads a list of available packages (Packages file).</li>
+<li>This is why you need <code>sudo apt update</code> before installing.</li>
+</ul>
+</li>
+<li>Resolves dependencies
+<ul>
+<li><code>apt</code> checks what your app depends on and ensures all are installed.</li>
+</ul>
+</li>
+<li>Downloads the <code>.deb</code>
+<ul>
+<li>The actual <code>.deb</code> binary package is pulled from the repo.</li>
+</ul>
+</li>
+<li>Installs and configures
+<ul>
+<li><code>dpkg</code> unpacks the <code>.deb</code>.</li>
+<li>Post-install scripts (if any) run to configure your app.</li>
+</ul>
+</li>
+</ol>
+<p>So when users type <code>apt install awesome-app</code>, they’re really pulling a .deb that you’ve already published in a repository — in our case, Launchpad will host that repo for you.</p>
+<h3 id="22-what-you-need-to-publish-your-app">2.2 What you need to publish your app<a hidden class="anchor" aria-hidden="true" href="#22-what-you-need-to-publish-your-app">#</a></h3>
+<p>Before <code>apt</code> can deliver your app to the world, you need to prepare a few things:</p>
+<ol>
+<li>
+<p><strong>Your application source code</strong></p>
+<ul>
+<li>Could be written in Go, Python, Rust, C… anything.</li>
+<li>What matters is: you can build it into a binary or script that runs on Ubuntu.</li>
+</ul>
+</li>
+<li>
+<p><strong>Debian packaging (<code>debian/</code> folder)</strong></p>
+<ul>
+<li>This is how Ubuntu knows how to build, describe, and install your app.</li>
+<li>Key files include:
+<ul>
+<li><code>control</code> → package metadata (name, description, dependencies).</li>
+<li><code>changelog</code> → version history, target Ubuntu release (e.g. <em>noble</em>).</li>
+<li><code>rules</code> → instructions to build the app.</li>
+<li><code>source/format</code> → usually <code>3.0 (quilt)</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>GPG key</strong></p>
+<ul>
+<li>Needed to sign your uploads.</li>
+<li>Launchpad requires this so it can trust you as the publisher.</li>
+</ul>
+</li>
+<li>
+<p><strong>A PPA on Launchpad</strong></p>
+<ul>
+<li>Stands for <em>Personal Package Archive</em>.</li>
+<li>Launchpad hosts it for you, for free.</li>
+<li>Once you upload a source package, Launchpad builds it into <code>.deb</code> files.</li>
+</ul>
+</li>
+<li>
+<p><strong>dput (upload tool)</strong></p>
+<ul>
+<li>This is the CLI tool you’ll use to send your source package to Launchpad.</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-step-by-step-guide">3. Step by step guide<a hidden class="anchor" aria-hidden="true" href="#3-step-by-step-guide">#</a></h2>
+<h3 id="31-create-your-ppa">3.1. Create your PPA<a hidden class="anchor" aria-hidden="true" href="#31-create-your-ppa">#</a></h3>
+<p>A <strong>PPA (Personal Package Archive)</strong> is a personal software repository hosted on Launchpad.<br>
+It lets you distribute <code>.deb</code> packages easily, so users can install your app with <code>apt</code>.</p>
+<ul>
+<li>
+<p>Sign in at <a href="https://launchpad.net">Launchpad PPA</a>
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/01.png"></p>
+</li>
+<li>
+<p>Create your first PPA, you can this this like <code>Github</code> repositories
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/02.png"></p>
+</li>
+<li>
+<p>Fill PPA information.
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/03.png"></p>
+</li>
+</ul>
+<h3 id="32-create-a-gpg-key-and-add-it-to-launchpad">3.2. Create a <code>GPG</code> key and add it to Launchpad<a hidden class="anchor" aria-hidden="true" href="#32-create-a-gpg-key-and-add-it-to-launchpad">#</a></h3>
+<p>Run this to create <code>GPG</code> key:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --full-generate-key
+</span></span><span style="display:flex;"><span>gpg --list-keys
+</span></span></code></pre></div><p>You can get <code>1 public key</code> and <code>1 private key</code></p>
+<p>Uploads <code>GPG</code> key to <a href="https://keyserver.ubuntu.com/">Ubuntu keyserver</a> first
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/04.png">
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/05.png"></p>
+<p>If everything fine, we can back to <a href="https://launchpad.net/">Launchpad</a> to add <code>GPG</code>:
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/06.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/miha-site/tags/linux/">Linux</a></li>
+      <li><a href="http://localhost:1313/miha-site/tags/ubuntu/">Ubuntu</a></li>
+      <li><a href="http://localhost:1313/miha-site/tags/ppa/">Ppa</a></li>
+      <li><a href="http://localhost:1313/miha-site/tags/devops/">Devops</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/miha-site/">MinhBoo&#39;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

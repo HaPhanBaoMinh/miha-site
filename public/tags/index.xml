@@ -2,52 +2,66 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on MinhBoo&#39;s Blog</title>
-    <link>http://localhost:42161/miha-site/tags/</link>
+    <link>http://localhost:1313/miha-site/tags/</link>
     <description>Recent content in Tags on MinhBoo&#39;s Blog</description>
     <generator>Hugo -- 0.148.2</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Aug 2025 10:00:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:42161/miha-site/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Argocd</title>
-      <link>http://localhost:42161/miha-site/tags/argocd/</link>
-      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:42161/miha-site/tags/argocd/</guid>
-      <description></description>
-    </item>
+    <lastBuildDate>Mon, 25 Aug 2025 10:00:00 +0700</lastBuildDate>
+    <atom:link href="http://localhost:1313/miha-site/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Devops</title>
-      <link>http://localhost:42161/miha-site/tags/devops/</link>
-      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:42161/miha-site/tags/devops/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Gitops</title>
-      <link>http://localhost:42161/miha-site/tags/gitops/</link>
-      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:42161/miha-site/tags/gitops/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Kubernetes</title>
-      <link>http://localhost:42161/miha-site/tags/kubernetes/</link>
-      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:42161/miha-site/tags/kubernetes/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Docker</title>
-      <link>http://localhost:42161/miha-site/tags/docker/</link>
-      <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:42161/miha-site/tags/docker/</guid>
+      <link>http://localhost:1313/miha-site/tags/devops/</link>
+      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/devops/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>http://localhost:42161/miha-site/tags/linux/</link>
+      <link>http://localhost:1313/miha-site/tags/linux/</link>
+      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/linux/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ppa</title>
+      <link>http://localhost:1313/miha-site/tags/ppa/</link>
+      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/ppa/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ubuntu</title>
+      <link>http://localhost:1313/miha-site/tags/ubuntu/</link>
+      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/ubuntu/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Argocd</title>
+      <link>http://localhost:1313/miha-site/tags/argocd/</link>
+      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/argocd/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Gitops</title>
+      <link>http://localhost:1313/miha-site/tags/gitops/</link>
+      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/gitops/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kubernetes</title>
+      <link>http://localhost:1313/miha-site/tags/kubernetes/</link>
+      <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker</title>
+      <link>http://localhost:1313/miha-site/tags/docker/</link>
       <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:42161/miha-site/tags/linux/</guid>
+      <guid>http://localhost:1313/miha-site/tags/docker/</guid>
       <description></description>
     </item>
   </channel>
