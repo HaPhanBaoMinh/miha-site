@@ -3,7 +3,7 @@ title: "Ship your app to the World: Share it through apt"
 description: ""
 author: "MinhBoo"
 date: 2025-08-25T10:00:00+07:00
-draft: true
+draft: false
 tags: ["linux", "ubuntu", "ppa", "devops"]
 categories: ["Tech"]
 hideSummary: false
@@ -92,7 +92,7 @@ It lets you distribute `.deb` packages easily, so users can install your app wit
 - Sign in at [Launchpad PPA](https://launchpad.net)
 ![blog_003](images/01.png)
 
-- Create your first PPA, you can this this like `Github` repositories
+- Create your first PPA, you can thing this like `Github` repositories
 ![blog_003](images/02.png)
 
 - Fill PPA information.
@@ -115,3 +115,112 @@ Uploads `GPG` key to [Ubuntu keyserver](https://keyserver.ubuntu.com/) first
 If everything fine, we can back to [Launchpad](https://launchpad.net/) to add `GPG`:
 ![blog_003](images/06.png)
 
+Import your public `GPG` key:
+![blog_003](images/07.png)
+
+Now you can see your `public key` in home page and make sure keep your `private key` in safe area: 
+![blog_003](images/08.png)
+
+### 3.3. Prepare Debian packaging
+
+Ok your `PPA` is ready, now we need setup your application repo
+Ubuntu requires a `debian/` folder inside your project to know how to build and install your app.
+
+You can refer to the setup in my repository: [kmet](https://github.com/HaPhanBaoMinh/kmet) 
+
+Minimal structure looks like this:
+```bash
+debian/
+├── changelog
+├── compat
+├── control
+├── copyright
+├── rules
+└── source/format
+```
+- `changelog` – version history and target Ubuntu release.
+- `compat` – debhelper compatibility level.
+- `control` – package metadata: name, maintainer, dependencies, description.
+- `copyright` – license and copyright info.
+- `rules` – build instructions (like a Makefile).
+- `source/format` – source package format, usually 3.0 (quilt).
+
+`control` file:
+```bash 
+Source: awesome-app
+Section: utils
+Priority: optional
+Maintainer: Your Name <you@example.com>
+Build-Depends: debhelper-compat (= 13), golang-any
+Standards-Version: 4.6.2
+Homepage: https://github.com/yourname/awesome-app
+
+Package: awesome-app
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Awesome CLI tool
+ A simple command-line tool that performs awesome tasks.
+ This extended description provides more details about
+ what the tool does, how it can be used, and why it is
+ useful. Each paragraph should be indented by one space.
+```
+
+`changelog` file:
+Instead of writing manually, use dch (Debian ChangeLog Helper) from the devscripts package.
+
+Install the tool:
+```bash
+sudo apt install devscripts
+```
+
+Create a new changelog:
+```bash
+dch --create -v 1.0-0ubuntu1 --package awesome-app
+```
+
+Example generated entry - `changelog` file
+```bash
+awesome-app (1.0-0ubuntu1) noble; urgency=medium
+
+  * Initial release 
+
+ -- Your Name <you@example.com>  Tue, 02 Sep 2025 10:00:00 +0700
+```
+
+`rules` file:  
+This file defines how your package is built and installed. For Go applications, you often need to customize it to ensure the binary is compiled correctly.  
+
+Example `debian/rules` for a Go project:
+```bash
+#!/usr/bin/make -f
+export DH_VERBOSE=1
+export GO111MODULE=on
+export GOFLAGS=-mod=vendor -buildvcs=false
+export CGO_ENABLED=0
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	go build -v -trimpath -ldflags "-s -w" -o build/kmet ./cmd/kmet
+
+override_dh_auto_install:
+	install -D -m0755 build/kmet debian/kmet/usr/bin/kmet
+
+override_dh_auto_test:
+	true
+```
+- `DH_VERBOSE=1` → makes debhelper show detailed logs.
+- `GO111MODULE=on, GOFLAGS, CGO_ENABLED=0` → Go environment variables for reproducible builds.
+- `override_dh_auto_build` → custom build command (go build …).
+- `override_dh_auto_install` → installs the binary into the correct path inside the package.
+- `override_dh_auto_test` → disables tests (always returns true).
+
+### 3.4. Build the source package
+
+Once your `debian/` folder is ready, you can build a **source package** that Launchpad accepts.  
+From your project root, run:
+
+```bash
+dpkg-buildpackage -S -sa
+```
