@@ -103,14 +103,50 @@ It lets you distribute `.deb` packages easily, so users can install your app wit
 Run this to create `GPG` key:
 ```bash
 gpg --full-generate-key
-gpg --list-keys
+
+OUTPUT:
+gpg (GnuPG) 2.4.4; Copyright (C) 2024 g10 Code GmbH
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (9) ECC (sign and encrypt) *default*
+  (10) ECC (sign only)
+  (14) Existing key from card
+Your selection? 
+```
+- Choose (1) RSA and RSA.
+- When asked for key size → enter 4096.
+- When asked for expiration → you can set 0 (no expiration) or specify a duration (e.g., 2 years).
+- Enter your PPA Launchpad Id, email
+
+```bash 
+OUTPUT:
+public and secret key created and signed.
+
+pub   rsa4096 2025-09-02 [SC]
+      4F87F78EAF7CDBA041208659EA6BEB6A320399ED
+uid                      minh-229 (N/A) <haphanbaominh9674@gmail.com>
+sub   rsa4096 2025-09-02 [E]
 ```
 
 You can get `1 public key` and `1 private key`
+```bash 
+# Public key 
+gpg --armor --export 4F87F78EAF7CDBA041208659EA6BEB6A320399ED > public.key.asc
+
+# Private key
+gpg --armor --export-secret-keys 4F87F78EAF7CDBA041208659EA6BEB6A320399ED > private.key.asc
+```
 
 Uploads `GPG` key to [Ubuntu keyserver](https://keyserver.ubuntu.com/) first
 ![blog_003](images/04.png)
 ![blog_003](images/05.png)
+![blog_003](images/09.png)
 
 If everything fine, we can back to [Launchpad](https://launchpad.net/) to add `GPG`:
 ![blog_003](images/06.png)
@@ -120,6 +156,25 @@ Import your public `GPG` key:
 
 Now you can see your `public key` in home page and make sure keep your `private key` in safe area: 
 ![blog_003](images/08.png)
+![blog_003](images/10.png)
+![blog_003](images/11.png)
+Save the entire section from -----BEGIN PGP MESSAGE----- to -----END PGP MESSAGE----- into a file:
+```bash 
+nano launchpad-msg.asc
+```
+Use GPG to decrypt:
+```bash 
+gpg --decrypt launchpad-msg.asc
+
+OUTPUT:
+Please go here to finish adding the key to your Launchpad account:
+
+    <confirm-link>
+```
+
+Enter the link and confirm that 
+![blog_003](images/12.png)
+![blog_003](images/13.png)
 
 ### 3.3. Prepare Debian packaging
 
@@ -217,6 +272,9 @@ override_dh_auto_test:
 - `override_dh_auto_test` → disables tests (always returns true).
 
 ### 3.4. Build the source package
+
+First your need zip for source code:
+
 
 Once your `debian/` folder is ready, you can build a **source package** that Launchpad accepts.  
 From your project root, run:

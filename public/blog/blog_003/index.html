@@ -242,17 +242,64 @@ It lets you distribute <code>.deb</code> packages easily, so users can install y
 <h3 id="32-create-a-gpg-key-and-add-it-to-launchpad">3.2. Create a <code>GPG</code> key and add it to Launchpad<a hidden class="anchor" aria-hidden="true" href="#32-create-a-gpg-key-and-add-it-to-launchpad">#</a></h3>
 <p>Run this to create <code>GPG</code> key:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --full-generate-key
-</span></span><span style="display:flex;"><span>gpg --list-keys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span>gpg <span style="color:#f92672">(</span>GnuPG<span style="color:#f92672">)</span> 2.4.4; Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">2024</span> g10 Code GmbH
+</span></span><span style="display:flex;"><span>This is free software: you are free to change and redistribute it.
+</span></span><span style="display:flex;"><span>There is NO WARRANTY, to the extent permitted by law.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Please <span style="color:#66d9ef">select</span> what kind of key you want:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> RSA and RSA
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span> DSA and Elgamal
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">(</span>3<span style="color:#f92672">)</span> DSA <span style="color:#f92672">(</span>sign only<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">(</span>4<span style="color:#f92672">)</span> RSA <span style="color:#f92672">(</span>sign only<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">(</span>9<span style="color:#f92672">)</span> ECC <span style="color:#f92672">(</span>sign and encrypt<span style="color:#f92672">)</span> *default*
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">(</span>10<span style="color:#f92672">)</span> ECC <span style="color:#f92672">(</span>sign only<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">(</span>14<span style="color:#f92672">)</span> Existing key from card
+</span></span><span style="display:flex;"><span>Your selection? 
+</span></span></code></pre></div><ul>
+<li>Choose (1) RSA and RSA.</li>
+<li>When asked for key size → enter 4096.</li>
+<li>When asked for expiration → you can set 0 (no expiration) or specify a duration (e.g., 2 years).</li>
+<li>Enter your PPA Launchpad Id, email</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span>public and secret key created and signed.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pub   rsa4096 2025-09-02 <span style="color:#f92672">[</span>SC<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      4F87F78EAF7CDBA041208659EA6BEB6A320399ED
+</span></span><span style="display:flex;"><span>uid                      minh-229 <span style="color:#f92672">(</span>N/A<span style="color:#f92672">)</span> &lt;haphanbaominh9674@gmail.com&gt;
+</span></span><span style="display:flex;"><span>sub   rsa4096 2025-09-02 <span style="color:#f92672">[</span>E<span style="color:#f92672">]</span>
 </span></span></code></pre></div><p>You can get <code>1 public key</code> and <code>1 private key</code></p>
-<p>Uploads <code>GPG</code> key to <a href="https://keyserver.ubuntu.com/">Ubuntu keyserver</a> first
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Public key </span>
+</span></span><span style="display:flex;"><span>gpg --armor --export 4F87F78EAF7CDBA041208659EA6BEB6A320399ED &gt; public.key.asc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Private key</span>
+</span></span><span style="display:flex;"><span>gpg --armor --export-secret-keys 4F87F78EAF7CDBA041208659EA6BEB6A320399ED &gt; private.key.asc
+</span></span></code></pre></div><p>Uploads <code>GPG</code> key to <a href="https://keyserver.ubuntu.com/">Ubuntu keyserver</a> first
 <img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/04.png">
-<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/05.png"></p>
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/05.png">
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/09.png"></p>
 <p>If everything fine, we can back to <a href="https://launchpad.net/">Launchpad</a> to add <code>GPG</code>:
 <img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/06.png"></p>
 <p>Import your public <code>GPG</code> key:
 <img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/07.png"></p>
 <p>Now you can see your <code>public key</code> in home page and make sure keep your <code>private key</code> in safe area:
-<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/08.png"></p>
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/08.png">
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/10.png">
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/11.png">
+Save the entire section from &mdash;&ndash;BEGIN PGP MESSAGE&mdash;&ndash; to &mdash;&ndash;END PGP MESSAGE&mdash;&ndash; into a file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nano launchpad-msg.asc
+</span></span></code></pre></div><p>Use GPG to decrypt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --decrypt launchpad-msg.asc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTPUT:
+</span></span><span style="display:flex;"><span>Please go here to finish adding the key to your Launchpad account:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;confirm-link&gt;
+</span></span></code></pre></div><p>Enter the link and confirm that
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/12.png">
+<img alt="blog_003" loading="lazy" src="/miha-site/blog/blog_003/images/13.png"></p>
 <h3 id="33-prepare-debian-packaging">3.3. Prepare Debian packaging<a hidden class="anchor" aria-hidden="true" href="#33-prepare-debian-packaging">#</a></h3>
 <p>Ok your <code>PPA</code> is ready, now we need setup your application repo
 Ubuntu requires a <code>debian/</code> folder inside your project to know how to build and install your app.</p>
@@ -330,6 +377,7 @@ This file defines how your package is built and installed. For Go applications, 
 <li><code>override_dh_auto_test</code> → disables tests (always returns true).</li>
 </ul>
 <h3 id="34-build-the-source-package">3.4. Build the source package<a hidden class="anchor" aria-hidden="true" href="#34-build-the-source-package">#</a></h3>
+<p>First your need zip for source code:</p>
 <p>Once your <code>debian/</code> folder is ready, you can build a <strong>source package</strong> that Launchpad accepts.<br>
 From your project root, run:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dpkg-buildpackage -S -sa
