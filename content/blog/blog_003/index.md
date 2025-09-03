@@ -230,7 +230,7 @@ sudo apt install devscripts
 
 Create a new changelog:
 ```bash
-dch --create -v 1.0-0ubuntu1 --package awesome-app
+dch --create --package kmet -v 1.0-0ppa1~noble -D noble -u medium "PPA build for noble."
 ```
 
 Example generated entry - `changelog` file
@@ -273,12 +273,94 @@ override_dh_auto_test:
 
 ### 3.4. Build the source package
 
-First your need zip for source code:
-
+First, you need to package your source code and sign it with the GPG key you registered earlier
+```bash
+git archive --format=tar --prefix=kmet-1.0/ HEAD | gzip -9 > ../kmet_1.0.orig.tar.gz
+```
 
 Once your `debian/` folder is ready, you can build a **source package** that Launchpad accepts.  
 From your project root, run:
 
 ```bash
-dpkg-buildpackage -S -sa
+dpkg-buildpackage -S -sa -<public-key>
+
+# Example:
+dpkg-buildpackage -S -sa -k64E5A07FCB51930AF20406182192582C7A4B3765 
+
+OUTPUT:
+dpkg-buildpackage: info: source package kmet
+dpkg-buildpackage: info: source version 1.0-0ppa1~noble
+dpkg-buildpackage: info: source distribution noble
+dpkg-buildpackage: info: source changed by Ha Phan Bao Minh <haphanbaominh9674@gmail.com>
+ dpkg-source --before-build .
+dpkg-source: info: using options from kmet/debian/source/options: --extend-diff-ignore=(^|/)vendor/.*
+ debian/rules clean
+dh clean
+dh: warning: LTO optimize is enable in buildflags. But cgo doesn't support it. LTO flags will be stripped in cgo.
+   dh_auto_clean
+dh_auto_clean: warning: LTO optimize is enable in buildflags. But cgo doesn't support it. LTO flags will be stripped in cgo.
+   dh_clean
+	rm -f debian/debhelper-build-stamp
+	rm -rf debian/.debhelper/
+	rm -f -- debian/kmet.substvars debian/files
+	rm -fr -- debian/kmet/ debian/tmp/
+	find .  \( \( \
+		\( -path .\*/.git -o -path .\*/.svn -o -path .\*/.bzr -o -path .\*/.hg -o -path .\*/CVS -o -path .\*/.pc -o -path .\*/_darcs \) -prune -o -type f -a \
+	        \( -name '#*#' -o -name '.*~' -o -name '*~' -o -name DEADJOE \
+		 -o -name '*.orig' -o -name '*.rej' -o -name '*.bak' \
+		 -o -name '.*.orig' -o -name .*.rej -o -name '.SUMS' \
+		 -o -name TAGS -o \( -path '*/.deps/*' -a -name '*.P' \) \
+		\) -exec rm -f {} + \) -o \
+		\( -type d -a \( -name autom4te.cache -o -name __pycache__ \) -prune -exec rm -rf {} + \) \)
+ dpkg-source -b .
+dpkg-source: info: using options from kmet/debian/source/options: --extend-diff-ignore=(^|/)vendor/.*
+dpkg-source: info: using source format '3.0 (quilt)'
+dpkg-source: info: building kmet using existing ./kmet_1.0.orig.tar.gz
+dpkg-source: info: building kmet in kmet_1.0-0ppa1~noble.debian.tar.xz
+dpkg-source: info: building kmet in kmet_1.0-0ppa1~noble.dsc
+ dpkg-genbuildinfo --build=source -O../kmet_1.0-0ppa1~noble_source.buildinfo
+ dpkg-genchanges -sa --build=source -O../kmet_1.0-0ppa1~noble_source.changes
+dpkg-genchanges: info: including full source code in upload
+ dpkg-source --after-build .
+dpkg-source: info: using options from kmet/debian/source/options: --extend-diff-ignore=(^|/)vendor/.*
+dpkg-buildpackage: info: source-only upload (original source is included)
+ signfile kmet_1.0-0ppa1~noble.dsc
+ signfile kmet_1.0-0ppa1~noble_source.buildinfo
+ signfile kmet_1.0-0ppa1~noble_source.changes
 ```
+
+Your need to get file 
+```bash 
+ls ..
+... <app_name>_<version>-0ppa1~noble_source.changes
+
+# Example:
+... kmet_1.0-0ppa1~noble_source.changes
+```
+
+Now, put your app
+```bash
+dput ppa:minh-229/ppa ../kmet_1.0-0ppa1~noble_source.changes
+
+OUTPUT:
+D: Splitting host argument out of  ppa:minh-229/ppa.
+D: Setting host argument.
+Checking signature on .changes
+gpg: ../kmet_1.0-0ppa1~noble_source.changes: Valid signature from 2192582C7A4B3765
+Checking signature on .dsc
+gpg: ../kmet_1.0-0ppa1~noble.dsc: Valid signature from 2192582C7A4B3765
+Package includes an .orig.tar.gz file although the debian revision suggests
+that it might not be required. Multiple uploads of the .orig.tar.gz may be
+rejected by the upload queue management software.
+Uploading to ppa (via ftp to ppa.launchpad.net):
+  Uploading kmet_1.0-0ppa1~noble.dsc: done.
+  Uploading kmet_1.0.orig.tar.gz: 614done.      
+  Uploading kmet_1.0-0ppa1~noble.debian.tar.xz: done.
+  Uploading kmet_1.0-0ppa1~noble_source.buildinfo: done.
+  Uploading kmet_1.0-0ppa1~noble_source.changes: done.
+Successfully uploaded packages.
+```
+
+### 3.5. Check your PPA
+![blog_003](images/14.png)
+![blog_003](images/15.png)
