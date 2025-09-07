@@ -1,32 +1,29 @@
 ---
-title: "Ship your app to the World: Share it through apt"
-description: ""
+title: "Publish Your App with apt via Launchpad PPA"
+description: "A step-by-step guide to package your app, upload to Launchpad, and distribute through apt."
 author: "MinhBoo"
 date: 2025-08-25T10:00:00+07:00
 draft: false
-tags: ["linux", "ubuntu", "ppa", "devops"]
-categories: ["Tech"]
+tags: ["linux", "ubuntu", "ppa", "devops", "debian packaging", "launchpad"]
+categories: ["Linux Packaging", "DevOps Guides"]
 hideSummary: false
-summary: "Tired of telling people to download .deb files? Learn how to package your app, upload it to Launchpad, and let anyone install it with just apt install."
+summary: "Stop sending raw .deb files. Package once, upload to Launchpad, and let users install your app with apt install."
 cover:
     image: ""
     alt: ""
     caption: ""
     relative: false
     hidden: false
-
 ---
 
 ## 1. Why should you care?
 
-You’ve built an awesome app — and now you want people to actually use it.
-But sharing source code or `.deb` files is inconvenient.
+Sharing `.deb` files is inconvenient and not scalable. With a PPA, users install your app simply with:
 
-Wouldn’t it be better if anyone could just type:
 ```bash
 sudo apt install awesome-app
 ```
-Publishing your app with `apt` makes that possible.
+This works because your package is hosted in a trusted repository (Launchpad), and apt fetches it like any other Ubuntu package.
 
 ## 2. Overview
 
@@ -143,7 +140,7 @@ gpg --armor --export 4F87F78EAF7CDBA041208659EA6BEB6A320399ED > public.key.asc
 gpg --armor --export-secret-keys 4F87F78EAF7CDBA041208659EA6BEB6A320399ED > private.key.asc
 ```
 
-Uploads `GPG` key to [Ubuntu keyserver](https://keyserver.ubuntu.com/) first
+First uploads `GPG` key to [Ubuntu keyserver](https://keyserver.ubuntu.com/)
 ![blog_003](images/04.png)
 ![blog_003](images/05.png)
 ![blog_003](images/09.png)
@@ -154,10 +151,9 @@ If everything fine, we can back to [Launchpad](https://launchpad.net/) to add `G
 Import your public `GPG` key:
 ![blog_003](images/07.png)
 
-Now you can see your `public key` in home page and make sure keep your `private key` in safe area: 
-![blog_003](images/08.png)
 ![blog_003](images/10.png)
 ![blog_003](images/11.png)
+
 Save the entire section from -----BEGIN PGP MESSAGE----- to -----END PGP MESSAGE----- into a file:
 ```bash 
 nano launchpad-msg.asc
@@ -175,6 +171,9 @@ Please go here to finish adding the key to your Launchpad account:
 Enter the link and confirm that 
 ![blog_003](images/12.png)
 ![blog_003](images/13.png)
+
+Now you can see your `public key` in home page and make sure keep your `private key` in safe area: 
+![blog_003](images/08.png)
 
 ### 3.3. Prepare Debian packaging
 
@@ -232,10 +231,15 @@ Create a new changelog:
 ```bash
 dch --create --package kmet -v 1.0-0ppa1~noble -D noble -u medium "PPA build for noble."
 ```
+`1.0-0ppa1~noble` follows `Debian/Ubuntu` versioning rules:
+- 1.0 → Upstream version of your application (your own release).
+- -0 → Debian revision. 0 means this package is not part of official Debian/Ubuntu but built externally.
+- ppa1 → Indicates this is the first build you upload to your PPA. If you upload fixes, increase it to ppa2, ppa3, etc.
+- ~noble → Target Ubuntu release. The tilde (~) ensures that when Ubuntu releases an official 1.0-1 package, it will sort as newer than your PPA build.
 
 Example generated entry - `changelog` file
 ```bash
-awesome-app (1.0-0ubuntu1) noble; urgency=medium
+awesome-app (1.0-0ppa4~noble) noble; urgency=medium
 
   * Initial release 
 
@@ -252,11 +256,14 @@ export DH_VERBOSE=1
 export GO111MODULE=on
 export GOFLAGS=-mod=vendor -buildvcs=false
 export CGO_ENABLED=0
+export GOCACHE=$(CURDIR)/.cache/go-build
+export GOMODCACHE=$(CURDIR)/.cache/go-mod
 
 %:
 	dh $@
 
 override_dh_auto_build:
+	mkdir -p $(GOCACHE) $(GOMODCACHE)
 	go build -v -trimpath -ldflags "-s -w" -o build/kmet ./cmd/kmet
 
 override_dh_auto_install:
@@ -277,6 +284,10 @@ First, you need to package your source code and sign it with the GPG key you reg
 ```bash
 git archive --format=tar --prefix=kmet-1.0/ HEAD | gzip -9 > ../kmet_1.0.orig.tar.gz
 ```
+
+> **Note:** The name kmet_1.0.orig.tar.gz must exactly match the upstream version defined in debian/changelog. 
+
+> **kmet (2.3-0ppa1~noble) noble** => **kmet_2.3.orig.tar.gz**
 
 Once your `debian/` folder is ready, you can build a **source package** that Launchpad accepts.  
 From your project root, run:
@@ -364,3 +375,30 @@ Successfully uploaded packages.
 ### 3.5. Check your PPA
 ![blog_003](images/14.png)
 ![blog_003](images/15.png)
+![blog_003](images/16.png)
+
+Back to PPA, you can see build Successfully, but still need wait for publication, it need about 1 hour
+![blog_003](images/17.png)
+![blog_003](images/18.png)
+
+### 3.6. Install your app via apt
+
+```bash
+sudo add-apt-repository ppa:minh-229/kmet
+sudo apt update
+sudo apt install kmet
+
+OUTPUT:
+1 upgraded, 0 newly installed, 0 to remove and 54 not upgraded.
+Need to get 8,696 kB of archives.
+After this operation, 0 B of additional disk space will be used.
+Get:1 https://ppa.launchpadcontent.net/minh-229/kmet/ubuntu noble/main amd64 kmet amd64 1.0-0ppa4~noble [8,696 kB]
+Fetched 8,696 kB in 60s (145 kB/s)                                                                                                                                                           
+(Reading database ... 261261 files and directories currently installed.)
+Preparing to unpack .../kmet_1.0-0ppa4~noble_amd64.deb ...
+Unpacking kmet (1.0-0ppa4~noble) over (0.0.4-0ppa2~noble) ...
+Setting up kmet (1.0-0ppa4~noble) ...
+```
+
+![blog_003](images/19.png)
+It work, I can access my app
