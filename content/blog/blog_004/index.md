@@ -2,7 +2,7 @@
 title: "Redis: Standalone, Master-Replicas, Cluster Mode"
 description: "Overview of Redis deployment strategies: standalone, master-replica with Sentinel, and cluster mode."
 author: "MinhBoo"
-date: 2025-10-04T10:00:00+07:00
+date: 2025-10-04T22:00:00+07:00
 draft: false
 tags: ["redis", "devops", "high availability", "docker", "clustering", "lua"]
 categories: ["Database", "DevOps Guides"]
