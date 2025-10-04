@@ -4,10 +4,17 @@
     <title>Docker on MinhBoo&#39;s Blog</title>
     <link>http://localhost:1313/miha-site/tags/docker/</link>
     <description>Recent content in Docker on MinhBoo&#39;s Blog</description>
-    <generator>Hugo -- 0.149.1</generator>
+    <generator>Hugo -- 0.151.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 09 Aug 2025 10:00:00 +0700</lastBuildDate>
+    <lastBuildDate>Sat, 04 Oct 2025 10:00:00 +0700</lastBuildDate>
     <atom:link href="http://localhost:1313/miha-site/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis: Standalone, Master-Replicas, Cluster Mode</title>
+      <link>http://localhost:1313/miha-site/blog/blog_004/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/blog/blog_004/</guid>
+      <description>Overview of Redis deployment strategies: standalone, master-replica with Sentinel, and cluster mode.</description>
+    </item>
     <item>
       <title>Docker Containers: What the heck is really going on under the hood?</title>
       <link>http://localhost:1313/miha-site/blog/blog_001/</link>

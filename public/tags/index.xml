@@ -4,15 +4,64 @@
     <title>Tags on MinhBoo&#39;s Blog</title>
     <link>http://localhost:1313/miha-site/tags/</link>
     <description>Recent content in Tags on MinhBoo&#39;s Blog</description>
-    <generator>Hugo -- 0.149.1</generator>
+    <generator>Hugo -- 0.151.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Aug 2025 10:00:00 +0700</lastBuildDate>
+    <lastBuildDate>Sat, 04 Oct 2025 10:00:00 +0700</lastBuildDate>
     <atom:link href="http://localhost:1313/miha-site/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Clustering</title>
+      <link>http://localhost:1313/miha-site/tags/clustering/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/clustering/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Devops</title>
       <link>http://localhost:1313/miha-site/tags/devops/</link>
-      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
       <guid>http://localhost:1313/miha-site/tags/devops/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Docker</title>
+      <link>http://localhost:1313/miha-site/tags/docker/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/docker/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>High Availability</title>
+      <link>http://localhost:1313/miha-site/tags/high-availability/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/high-availability/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lua</title>
+      <link>http://localhost:1313/miha-site/tags/lua/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/lua/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Redis</title>
+      <link>http://localhost:1313/miha-site/tags/redis/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/redis/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Debian Packaging</title>
+      <link>http://localhost:1313/miha-site/tags/debian-packaging/</link>
+      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/debian-packaging/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Launchpad</title>
+      <link>http://localhost:1313/miha-site/tags/launchpad/</link>
+      <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/tags/launchpad/</guid>
       <description></description>
     </item>
     <item>
@@ -55,13 +104,6 @@
       <link>http://localhost:1313/miha-site/tags/kubernetes/</link>
       <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate>
       <guid>http://localhost:1313/miha-site/tags/kubernetes/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Docker</title>
-      <link>http://localhost:1313/miha-site/tags/docker/</link>
-      <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate>
-      <guid>http://localhost:1313/miha-site/tags/docker/</guid>
       <description></description>
     </item>
   </channel>

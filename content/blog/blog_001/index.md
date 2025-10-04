@@ -1,5 +1,5 @@
 ---
-title: "Docker Containers: What the heck is really going on under the hood?"
+title: "Docker Containers: How each container can run isolatedly on the same host"
 description: ""
 author: "MinhBoo"
 date: 2025-08-09T10:00:00+07:00
