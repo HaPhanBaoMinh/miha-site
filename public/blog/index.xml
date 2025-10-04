@@ -4,16 +4,23 @@
     <title>Blogs on MinhBoo&#39;s Blog</title>
     <link>http://localhost:1313/miha-site/blog/</link>
     <description>Recent content in Blogs on MinhBoo&#39;s Blog</description>
-    <generator>Hugo -- 0.149.1</generator>
+    <generator>Hugo -- 0.151.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Aug 2025 10:00:00 +0700</lastBuildDate>
+    <lastBuildDate>Sat, 04 Oct 2025 10:00:00 +0700</lastBuildDate>
     <atom:link href="http://localhost:1313/miha-site/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Ship your app to the World: Share it through apt</title>
+      <title>Redis: Standalone, Master-Replicas, Cluster Mode</title>
+      <link>http://localhost:1313/miha-site/blog/blog_004/</link>
+      <pubDate>Sat, 04 Oct 2025 10:00:00 +0700</pubDate>
+      <guid>http://localhost:1313/miha-site/blog/blog_004/</guid>
+      <description>Overview of Redis deployment strategies: standalone, master-replica with Sentinel, and cluster mode.</description>
+    </item>
+    <item>
+      <title>Publish Your App with apt via Launchpad PPA</title>
       <link>http://localhost:1313/miha-site/blog/blog_003/</link>
       <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate>
       <guid>http://localhost:1313/miha-site/blog/blog_003/</guid>
-      <description>Tired of telling people to download .deb files? Learn how to package your app, upload it to Launchpad, and let anyone install it with just apt install.</description>
+      <description>A step-by-step guide to package your app, upload to Launchpad, and distribute through apt.</description>
     </item>
     <item>
       <title>GitOps with ArgoCD: Push Code, Sync and Take a Coffee</title>
