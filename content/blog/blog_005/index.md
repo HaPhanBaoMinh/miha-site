@@ -1,7 +1,7 @@
 ---
 title: "CPU quota: cpu_limit 2000Mi is 2 core ?"
 description:
-author: MinhBoo
+author: MinhBoo Okk
 date: 2026-04-20T22:00:00+07:00
 draft: false
 tags:
@@ -27,7 +27,13 @@ As shown in the diagram, each process is only allowed to use the CPU for a limit
 
 These switches happen so quickly that users often perceive the system as running many tasks in parallel, even though a single CPU core can only execute one process at a time.
 
-# 2. `CPU quota` in Linux
+Như chúng ta đã thấy, không có một process nào thực sự được gán "1 core" hay "2 core" cả. Vậy khi các bạn dùng k8s hoặc container thường sẽ cho phép set cpu_limit là 1 core, 2 core. Vậy bản chất nó là gì, nó đang limit điều gì ?
+
+# 2. CPU Used time
+Đây chính là keyword cần chúng ta tìm hiểu:
+
+
+# 3. `CPU quota` in Linux
 Nếu các bạn trước đây đã từng sử dụng qua `Docker` hoặc `K8s`, mỗi container chạy lên chúng ta đều có thể quy định được số CPU limit của từ container/pod, vậy thực chất là nó đang limit điều gì ở đây. 
 
 Trước tiên chúng ta cần quan tâm tới 2 giá trị sau:
@@ -40,9 +46,6 @@ Ví dụ:
 
 Mỗi `100ms`, cgroup được dùng CPU tối đa `50ms`
 
-
-
-
-# 3. Quick Demo
-# 4. Những thông tin khác
-# 5. Document tham khảo 
+# 4. Quick Demo
+# 5. Những thông tin khác
+# 6. Document tham khảo 
