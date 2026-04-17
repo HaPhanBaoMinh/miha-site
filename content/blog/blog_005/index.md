@@ -29,8 +29,16 @@ These switches happen so quickly that users often perceive the system as running
 
 Như chúng ta đã thấy, không có một process nào thực sự được gán "1 core" hay "2 core" cả. Vậy khi các bạn dùng k8s hoặc container thường sẽ cho phép set cpu_limit là 1 core, 2 core. Vậy bản chất nó là gì, nó đang limit điều gì ?
 
-# 2. CPU Used time
-Đây chính là keyword cần chúng ta tìm hiểu:
+# 2. CPU Used Time
+Đây chính là keyword cần chúng ta tìm hiểu.
+
+Chúng ta có thể hiểu đơn giản nó là tổng thời gian sử dụng CPU của process đó, ví dụ:
+- 1 process:
+  - thread A: sử dụng CPU 10ms
+  - thread B: sử dụng CPU 50ms
+Vậy tổng CPU time của process này là: 10ms + 50ms = 60ms
+
+
 
 
 # 3. `CPU quota` in Linux
