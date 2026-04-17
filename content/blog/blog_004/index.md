@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 1. Why should you case ?
+## 1. Why should you care ?
 
 This article introduces the different ways to deploy Redis in its main modes (standalone, master-replica + Sentinel, cluster).
 

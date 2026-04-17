@@ -2,8 +2,12 @@ baseURL: "https://haphanbaominh.github.io/miha-site/"
 languageCode: "en-us"
 title: "MinhBoo's Blog"
 theme: "PaperMod"
+buildFuture: true
 
 params:
+  author:
+    name: "MinhBoo"
+    email: "haphanbaominh.dev@gmail.com"
   homeInfoParams:
     Title: "Hi there 👋, I'm MinhBoo"
     Content: |
