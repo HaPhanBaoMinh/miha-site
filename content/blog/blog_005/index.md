@@ -1,7 +1,7 @@
 ---
 title: "CPU quota: cpu_limit 2000Mi is 2 core ?"
 description: ""
-author: MinhBoo Okk
+author: MinhBoo
 date: 2026-04-20T22:00:00+07:00
 draft: false
 tags:
@@ -74,7 +74,7 @@ First, we need to understand two important values:
 - `period`: the time window that the kernel uses to control **CPU usage**
 - `quota`: the maximum amount of **CPU time** that can be used within one period
 
-**Ví dụ:**
+**Example:**
 - `period = 100000 µs = 100 ms`
 - `quota = 50000 µs = 50 ms`
 
@@ -85,14 +85,15 @@ This means that in every `100ms`, the process can use up to `50ms` of **CPU time
 vCPU (cores) = quota / period
 ```
 
-**Ví dụ:**
+**Example:**
 - 200ms / 100ms = 2 core
 
 Wait, how can a process use `200ms` of CPU time within a `100ms` period?
 
 This happens when the process runs on multiple CPU cores at the same time.
 
-For example, if a process has 2 threads and each thread runs on a separate CPU core:
+For example:
+If a process has 2 threads and each thread runs on a separate CPU core:
 - Thread A uses **50ms** of CPU time
 - Thread B uses **50ms** of CPU time
 
@@ -104,12 +105,9 @@ This is important:
 **Using multiple cores does not increase the CPU quota. It only makes the quota get used up faster.**
 
 **CPU throttle:**
-
 Imagine you are given a fixed budget of **50 dollars** each week.
 If you spend it all in the **first few days,** you won’t be able to spend anything until the next week.
 **CPU throttling** works in a similar way: 1 the `CPU quota` is used up, the process must wait until the next `period` to continue.
-
-Nếu chưa hết thời gian `period` để được cấp `quota` mới mà process đã sử dụng hết `quota` thì trong khoảng thời gian sau đó process sẽ không được sử dụng CPU nữa. Khi đó CPU sẽ throttle, bắt buộc phải chờ tới khi tới `period` time để được cấp `quota` mới.
 
 If a process consumes its entire `CPU quota` before the end of the current `period`, it will be prevented from running for the rest of that period.
 This is known as **CPU throttling.** The process must wait until the next period begins, when the **quota is reset**, before it can run use  CPU again.
@@ -127,7 +125,7 @@ docker run -it --rm --cpus="1.0" --entrypoint /bin/bash ghcr.io/colinianking/str
 ```
 
 We can check `period` and `quota` of container:
-```
+```sh
 ---
 cat /sys/fs/cgroup/cpu.max
 
@@ -155,7 +153,7 @@ burst_usec 0
 ```
 ![blog_005](images/03.png)
 
-```
+```sh
 ---
 stress-ng --cpu 1 --timeout 10s
 cat /sys/fs/cgroup/cpu.stat
@@ -174,7 +172,7 @@ burst_usec 0
 ```
 ![blog_005](images/05.png)
 
-```
+```sh
 ---
 stress-ng --cpu 2 --timeout 10s
 cat /sys/fs/cgroup/cpu.stat
@@ -194,7 +192,7 @@ burst_usec 0
 ![blog_005](images/06.png)
 As you can see, when we run a stress test with 2 CPU workers, the process is throttled around **100 times**. But why does this number come out to be about **100**?
 
-```
+```sh
 stress-ng --cpu 2 --timeout 10s
 ---
 quota  = 100ms
