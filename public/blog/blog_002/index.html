@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/miha-site/livereload.js?mindelay=10&amp;v=2&amp;port=45779&amp;path=miha-site/livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>GitOps with ArgoCD: Push Code, Sync and Take a Coffee | MinhBoo&#39;s Blog</title>
 <meta name="keywords" content="gitops, argocd, kubernetes, devops">
 <meta name="description" content="How to control your whole Kubernetes life with ArgoCD and ApplicationSet">
 <meta name="author" content="MinhBoo">
-<link rel="canonical" href="http://localhost:45779/miha-site/blog/blog_002/">
+<link rel="canonical" href="https://haphanbaominh.github.io/miha-site/blog/blog_002/">
 <link crossorigin="anonymous" href="/miha-site/assets/css/stylesheet.aeb04085357f24835232aa89766467110fb6da019fa0a790d4d097b3949d7276.css" integrity="sha256-rrBAhTV/JINSMqqJdmRnEQ&#43;22gGfoKeQ1NCXs5SdcnY=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:45779/miha-site/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:45779/miha-site/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:45779/miha-site/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:45779/miha-site/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:45779/miha-site/safari-pinned-tab.svg">
+<link rel="icon" href="https://haphanbaominh.github.io/miha-site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://haphanbaominh.github.io/miha-site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://haphanbaominh.github.io/miha-site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://haphanbaominh.github.io/miha-site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://haphanbaominh.github.io/miha-site/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:45779/miha-site/blog/blog_002/">
+<link rel="alternate" hreflang="en" href="https://haphanbaominh.github.io/miha-site/blog/blog_002/">
 <noscript>
     <style>
         #theme-toggle,
@@ -55,7 +55,77 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://haphanbaominh.github.io/miha-site/blog/blog_002/">
+  <meta property="og:site_name" content="MinhBoo&#39;s Blog">
+  <meta property="og:title" content="GitOps with ArgoCD: Push Code, Sync and Take a Coffee">
+  <meta property="og:description" content="How to control your whole Kubernetes life with ArgoCD and ApplicationSet">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-08-16T10:00:00+07:00">
+    <meta property="article:modified_time" content="2025-08-16T10:00:00+07:00">
+    <meta property="article:tag" content="Gitops">
+    <meta property="article:tag" content="Argocd">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Devops">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GitOps with ArgoCD: Push Code, Sync and Take a Coffee">
+<meta name="twitter:description" content="How to control your whole Kubernetes life with ArgoCD and ApplicationSet">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://haphanbaominh.github.io/miha-site/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "GitOps with ArgoCD: Push Code, Sync and Take a Coffee",
+      "item": "https://haphanbaominh.github.io/miha-site/blog/blog_002/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GitOps with ArgoCD: Push Code, Sync and Take a Coffee",
+  "name": "GitOps with ArgoCD: Push Code, Sync and Take a Coffee",
+  "description": "How to control your whole Kubernetes life with ArgoCD and ApplicationSet",
+  "keywords": [
+    "gitops", "argocd", "kubernetes", "devops"
+  ],
+  "articleBody": "1. Warm-up: Setup Minikube. First thing: we need a cluster.\nIf you don’t have one → minikube is your best friend.\nYou can check this guide to get started.\nminikube start minikube addons enable ingress 2. Life without GitOps. It’s release day. You’ve got to update a deployment. Easy, right?\nkubectl apply -f deployment.yaml Done! But wait, what about the other 10 clusters?\nYou start copying and pasting, praying nothing breaks. But no, prod goes down and you’re left staring at logs, wondering where it all went wrong.\nWe need a better way to manage our Kubernetes resources and deployments.\n3. So.. what is GitOps? GitOps uses Git as the single source of truth. You define your desired Kubernetes state in Git (e.g., manifests, charts), then a tool like Argo CD ensures your cluster always matches that declared state.\nThis setup makes rollbacks effortless, history auditable, and collaboration smoother.\n4. Meet ArgoCD. ArgoCD is a GitOps tool for Kubernetes.\nIt watches your Git repo and makes sure your cluster always matches it — no more drift, no more manual apply.\nOk, let install it. We will install it by use Helm, so make sure you have Helm installed.\nhelm repo add argo https://argoproj.github.io/argo-helm helm repo update helm install argocd argo/argo-cd --namespace argocd --create-namespace After the installation, you can check the status of ArgoCD:\nAccess the ArgoCD UI by port-forwarding:\nkubectl port-forward svc/argocd-server -n argocd 8080:443 Open your browser and go to http://localhost:8080.\nLogin with the default credentials:\nUsername: admin Password: Get the password from the secret: kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath=\"{.data.password}\" | base64 -d; echo Now you can see the ArgoCD dashboard. It’s empty, but we’ll fill it up soon. 5. Setup Git Repository Let’s make a repo structure that scales. We’ll have one root `ApplicationSet that controls multiple apps across environments.\ngitops-repo/ ├── applicationset.yaml # the boss ├── dev/ │ ├── app/ # your application manifests │ └── addons/ # infra stuff like logging, ingress ├── test/ │ ├── app/ │ └── addons/ └── prod/ ├── app/ └── addons/ Create a new Git repository (e.g., on GitHub, GitLab, etc.) and push this structure to it.\n6. Create the ApplicationSet Now let’s bring in the real magic: ApplicationSet.\nThis single config will look at your repo folders (dev, test, prod) and create Applications for each one automatically.\nWith this setup, you can just add .yaml file to the respective folder, and it will be picked up by ArgoCD.\napiVersion: argoproj.io/v1alpha1 kind: ApplicationSet metadata: name: root-application namespace: argocd spec: goTemplate: true generators: - git: repoURL: # e.g., revision: main directories: - path: dev - path: test - path: prod template: metadata: name: '{{ .path.basename }}' labels: tier: '{{ .path.basename }}' spec: project: default destination: server: https://kubernetes.default.svc namespace: argocd # because child is an Application manifest source: repoURL: git@github.com:MBoo-cloud/app-repo.git targetRevision: main path: '{{ .path.path }}' # apps/hight or apps/low directory: recurse: true # Read all files in the directory Apply it:\nkubectl apply -f applicationset.yaml -n argocd OUTPUT: applicationset.argoproj.io/root-application created Now, head back to the ArgoCD UI. You should see your ApplicationSet listed there.\nIf your repository is private, make sure to set up SSH keys or access tokens in ArgoCD project settings.\nAccess https://localhost:8080/settings/repos?addRepo=true to add your repository. Check your argocd-applicationset-controller log: Because we not set up any Application yet, so it will not show anything in the ArgoCD UI and in the argocd-applicationset-controller log.\n7. Create an Application Now, let’s create a simple Application manifest in the dev folder. Create a file dev/addons/nginx-app.yaml with the following content:\napiVersion: argoproj.io/v1alpha1 kind: Application metadata: name: nginx-app-dev namespace: argocd spec: project: default source: repoURL: https://charts.bitnami.com/bitnami chart: nginx targetRevision: 15.3.2 # Chart version helm: values: | service: type: ClusterIP replicaCount: 1 destination: server: https://kubernetes.default.svc namespace: dev syncPolicy: automated: prune: true selfHeal: true syncOptions: - CreateNamespace=true Push this file to your Git repository.\n. ├── applicationset.yaml ├── dev │ ├── addons │ │ └── nginx-app.yaml │ └── app ├── prod │ ├── addons │ └── app ├── README.md └── test ├── addons └── app You can check log of argocd-applicationset-controller and ArgoCD UI to see if it created the Application for you. Great! Now you have an Application created but we dont need any kubectl apply anything.\nYou can create more Applications in the test and prod folders, and they will be automatically picked up by the ApplicationSet.\n8. When Prod is on Fire 🔥 (Rollback to the Rescue) So imagine this:\nYou pushed a new commit, ArgoCD syncs it, and suddenly prod goes down.\nSlack is screaming, your boss is staring, and logs look like an alien language.\nNormally, you’d panic and start hacking YAMLs directly in the cluster.\nBut with GitOps, you can rollback to the last known good state in seconds.\nGo to ArgoCD UI. Select the Application (e.g., nginx-app-prod). Click on the History tab. Select the last working commit. Click Rollback. And just like that, you’re back in business. No more panic, no more chaos.\n9. Wrapping It All Up Let’s take a step back and see what we actually built together:\nWe started with minikube as a safe playground. We saw the pain of manual kubectl apply → chaos, drift, and bosses sighing behind our backs. We introduced GitOps: Git as the source of truth, clusters as dumb executors. We installed ArgoCD and set up a clean ApplicationSet structure for dev, test, and prod. We deployed our first app (nginx) into dev — without touching kubectl apply again. We showed how prod rollbacks become as easy as clicking a button. Final Thought With ArgoCD + GitOps, you stop worrying about how to deploy and focus on what to build.\nNext time your boss asks:\n“What’s running in prod right now?”\nYou just point to the Git repo and the ArgoCD UI, smile, and say:\n“Exactly what’s in Git, boss.”\nNow go grab that coffee ☕ — you’ve earned it.\n",
+  "wordCount" : "983",
+  "inLanguage": "en",
+  "datePublished": "2025-08-16T10:00:00+07:00",
+  "dateModified": "2025-08-16T10:00:00+07:00",
+  "author":{
+    "@type": "Person",
+    "name": "MinhBoo"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://haphanbaominh.github.io/miha-site/blog/blog_002/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "MinhBoo's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://haphanbaominh.github.io/miha-site/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class="" id="top">
@@ -73,7 +143,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:45779/miha-site/" accesskey="h" title="MinhBoo&#39;s Blog (Alt + H)">MinhBoo&#39;s Blog</a>
+            <a href="https://haphanbaominh.github.io/miha-site/" accesskey="h" title="MinhBoo&#39;s Blog (Alt + H)">MinhBoo&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -99,22 +169,22 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:45779/miha-site/" title="Home">
+                <a href="https://haphanbaominh.github.io/miha-site/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:45779/miha-site/blog/" title="Blog">
+                <a href="https://haphanbaominh.github.io/miha-site/blog/" title="Blog">
                     <span>Blog</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:45779/miha-site/archives/" title="Archive">
+                <a href="https://haphanbaominh.github.io/miha-site/archives/" title="Archive">
                     <span>Archive</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:45779/miha-site/search/" title="Search (Alt &#43; /)" accesskey=/>
+                <a href="https://haphanbaominh.github.io/miha-site/search/" title="Search (Alt &#43; /)" accesskey=/>
                     <span>Search</span>
                 </a>
             </li>
@@ -135,7 +205,42 @@
     <div class="post-meta"><span title='2025-08-16 10:00:00 +0700 +07'>August 16, 2025</span>&nbsp;·&nbsp;MinhBoo
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1-warm-up-setup-minikube" aria-label="1. Warm-up: Setup Minikube.">1. Warm-up: Setup Minikube.</a></li>
+                <li>
+                    <a href="#2-life-without-gitops" aria-label="2. Life without GitOps.">2. Life without GitOps.</a></li>
+                <li>
+                    <a href="#3-so-what-is-gitops" aria-label="3. So.. what is GitOps?">3. So.. what is GitOps?</a></li>
+                <li>
+                    <a href="#4-meet-argocd" aria-label="4. Meet ArgoCD.">4. Meet ArgoCD.</a></li>
+                <li>
+                    <a href="#5-setup-git-repository" aria-label="5. Setup Git Repository">5. Setup Git Repository</a></li>
+                <li>
+                    <a href="#6-create-the-applicationset" aria-label="6. Create the ApplicationSet">6. Create the ApplicationSet</a></li>
+                <li>
+                    <a href="#7-create-an-application" aria-label="7. Create an Application">7. Create an Application</a></li>
+                <li>
+                    <a href="#8-when-prod-is-on-fire--rollback-to-the-rescue" aria-label="8. When Prod is on Fire 🔥 (Rollback to the Rescue)">8. When Prod is on Fire 🔥 (Rollback to the Rescue)</a></li>
+                <li>
+                    <a href="#9-wrapping-it-all-up" aria-label="9. Wrapping It All Up">9. Wrapping It All Up</a><ul>
+                        
+                <li>
+                    <a href="#final-thought" aria-label="Final Thought">Final Thought</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><h2 id="1-warm-up-setup-minikube">1. Warm-up: Setup Minikube.<a hidden class="anchor" aria-hidden="true" href="#1-warm-up-setup-minikube">#</a></h2>
 <p>First thing: we need a cluster.<br>
 If you don’t have one → <strong>minikube</strong> is your best friend.</p>
@@ -333,17 +438,17 @@ But with GitOps, you can <strong>rollback</strong> to the last known good state 
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:45779/miha-site/tags/gitops/">Gitops</a></li>
-      <li><a href="http://localhost:45779/miha-site/tags/argocd/">Argocd</a></li>
-      <li><a href="http://localhost:45779/miha-site/tags/kubernetes/">Kubernetes</a></li>
-      <li><a href="http://localhost:45779/miha-site/tags/devops/">Devops</a></li>
+      <li><a href="https://haphanbaominh.github.io/miha-site/tags/gitops/">Gitops</a></li>
+      <li><a href="https://haphanbaominh.github.io/miha-site/tags/argocd/">Argocd</a></li>
+      <li><a href="https://haphanbaominh.github.io/miha-site/tags/kubernetes/">Kubernetes</a></li>
+      <li><a href="https://haphanbaominh.github.io/miha-site/tags/devops/">Devops</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:45779/miha-site/">MinhBoo&#39;s Blog</a></span> · 
+        <span>&copy; 2026 <a href="https://haphanbaominh.github.io/miha-site/">MinhBoo&#39;s Blog</a></span> · 
 
     <span>
         Powered by

@@ -2,26 +2,35 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Linux on MinhBoo&#39;s Blog</title>
-    <link>http://localhost:45779/miha-site/tags/linux/</link>
+    <link>https://haphanbaominh.github.io/miha-site/tags/linux/</link>
     <description>Recent content in Linux on MinhBoo&#39;s Blog</description>
     <generator>Hugo -- 0.160.1</generator>
     <language>en-us</language>
     <managingEditor>haphanbaominh.dev@gmail.com (MinhBoo)</managingEditor>
     <webMaster>haphanbaominh.dev@gmail.com (MinhBoo)</webMaster>
-    <lastBuildDate>Mon, 25 Aug 2025 10:00:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:45779/miha-site/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 20 Apr 2026 22:00:00 +0700</lastBuildDate>
+    <atom:link href="https://haphanbaominh.github.io/miha-site/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CPU quota: cpu_limit 2000Mi is 2 core ?</title>
+      <link>https://haphanbaominh.github.io/miha-site/blog/blog_005/</link>
+      <pubDate>Mon, 20 Apr 2026 22:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
+      <guid>https://haphanbaominh.github.io/miha-site/blog/blog_005/</guid>
+      <description>&lt;h1 id=&#34;1-cpu-switch-context&#34;&gt;1. CPU switch context&lt;/h1&gt;
+&lt;p&gt;First, I want everyone to understand how the CPU handles processes. Assume we have a single CPU with one core. In principle, at any given moment, only one process can use that CPU core for computation.&lt;/p&gt;
+&lt;p&gt;That means processes must be scheduled to take turns using the CPU, and the &lt;code&gt;Linux kernel scheduler&lt;/code&gt; is responsible for deciding that schedule, including how long each process gets to run.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Publish Your App with apt via Launchpad PPA</title>
-      <link>http://localhost:45779/miha-site/blog/blog_003/</link>
+      <link>https://haphanbaominh.github.io/miha-site/blog/blog_003/</link>
       <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/blog/blog_003/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/blog/blog_003/</guid>
       <description>A step-by-step guide to package your app, upload to Launchpad, and distribute through apt.</description>
     </item>
     <item>
       <title>Docker Containers: How each container can run isolatedly on the same host</title>
-      <link>http://localhost:45779/miha-site/blog/blog_001/</link>
+      <link>https://haphanbaominh.github.io/miha-site/blog/blog_001/</link>
       <pubDate>Sat, 09 Aug 2025 10:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/blog/blog_001/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/blog/blog_001/</guid>
       <description>Ever wondered what happens when you run a Docker container? Let&amp;rsquo;s dive into the Linux magic behind namespaces, cgroups, and overlay filesystems that make it all possible.</description>
     </item>
   </channel>

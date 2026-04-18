@@ -2,47 +2,47 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Categories on MinhBoo&#39;s Blog</title>
-    <link>http://localhost:45779/miha-site/categories/</link>
+    <link>https://haphanbaominh.github.io/miha-site/categories/</link>
     <description>Recent content in Categories on MinhBoo&#39;s Blog</description>
     <generator>Hugo -- 0.160.1</generator>
     <language>en-us</language>
     <managingEditor>haphanbaominh.dev@gmail.com (MinhBoo)</managingEditor>
     <webMaster>haphanbaominh.dev@gmail.com (MinhBoo)</webMaster>
     <lastBuildDate>Mon, 20 Apr 2026 22:00:00 +0700</lastBuildDate>
-    <atom:link href="http://localhost:45779/miha-site/categories/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://haphanbaominh.github.io/miha-site/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux</title>
-      <link>http://localhost:45779/miha-site/categories/linux/</link>
+      <link>https://haphanbaominh.github.io/miha-site/categories/linux/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/categories/linux/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/categories/linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Database</title>
-      <link>http://localhost:45779/miha-site/categories/database/</link>
+      <link>https://haphanbaominh.github.io/miha-site/categories/database/</link>
       <pubDate>Sat, 04 Oct 2025 22:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/categories/database/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/categories/database/</guid>
       <description></description>
     </item>
     <item>
       <title>DevOps Guides</title>
-      <link>http://localhost:45779/miha-site/categories/devops-guides/</link>
+      <link>https://haphanbaominh.github.io/miha-site/categories/devops-guides/</link>
       <pubDate>Sat, 04 Oct 2025 22:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/categories/devops-guides/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/categories/devops-guides/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux Packaging</title>
-      <link>http://localhost:45779/miha-site/categories/linux-packaging/</link>
+      <link>https://haphanbaominh.github.io/miha-site/categories/linux-packaging/</link>
       <pubDate>Mon, 25 Aug 2025 10:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/categories/linux-packaging/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/categories/linux-packaging/</guid>
       <description></description>
     </item>
     <item>
       <title>Tech</title>
-      <link>http://localhost:45779/miha-site/categories/tech/</link>
+      <link>https://haphanbaominh.github.io/miha-site/categories/tech/</link>
       <pubDate>Sat, 16 Aug 2025 10:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
-      <guid>http://localhost:45779/miha-site/categories/tech/</guid>
+      <guid>https://haphanbaominh.github.io/miha-site/categories/tech/</guid>
       <description></description>
     </item>
   </channel>

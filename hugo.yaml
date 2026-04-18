@@ -5,6 +5,8 @@ theme: "PaperMod"
 buildFuture: true
 
 params:
+  ShowToc: true
+  TocOpen: true
   author:
     name: "MinhBoo"
     email: "haphanbaominh.dev@gmail.com"
@@ -52,5 +54,11 @@ menu:
       name: Search
       url: /search/
       weight: 4
+
+markup:
+  tableOfContents:
+    startLevel: 2
+    endLevel: 4
+    ordered: false
 
 
