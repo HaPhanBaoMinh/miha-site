@@ -1,6 +1,6 @@
 ---
 title: "CPU quota: cpu_limit 2000Mi is 2 core ?"
-description:
+description: ""
 author: MinhBoo Okk
 date: 2026-04-20T22:00:00+07:00
 draft: false
@@ -11,7 +11,7 @@ tags:
 categories:
   - Linux
 hideSummary: false
-summary:
+summary: ""
 ---
 # 1. CPU switch context
 
@@ -105,13 +105,13 @@ This is important:
 
 **CPU throttle:**
 
-Imagine you are given a fixed budget of **50 dollars** each week. 
-If you spend it all in the **first few days,** you won’t be able to spend anything until the next week. 
+Imagine you are given a fixed budget of **50 dollars** each week.
+If you spend it all in the **first few days,** you won’t be able to spend anything until the next week.
 **CPU throttling** works in a similar way: 1 the `CPU quota` is used up, the process must wait until the next `period` to continue.
 
 Nếu chưa hết thời gian `period` để được cấp `quota` mới mà process đã sử dụng hết `quota` thì trong khoảng thời gian sau đó process sẽ không được sử dụng CPU nữa. Khi đó CPU sẽ throttle, bắt buộc phải chờ tới khi tới `period` time để được cấp `quota` mới.
 
-If a process consumes its entire `CPU quota` before the end of the current `period`, it will be prevented from running for the rest of that period. 
+If a process consumes its entire `CPU quota` before the end of the current `period`, it will be prevented from running for the rest of that period.
 This is known as **CPU throttling.** The process must wait until the next period begins, when the **quota is reset**, before it can run use  CPU again.
 ![blog_005](images/04.jpeg)
 **Example:**
@@ -119,7 +119,7 @@ This is known as **CPU throttling.** The process must wait until the next period
 
 So, when we set a CPU limit in **Kubernetes** or **containers**, we are essentially limiting the **CPU quota.**
 
-**That is how we limit CPU resources!** 
+**That is how we limit CPU resources!**
 
 Let create 1 container:
 ```sh
@@ -129,13 +129,13 @@ docker run -it --rm --cpus="1.0" --entrypoint /bin/bash ghcr.io/colinianking/str
 We can check `period` and `quota` of container:
 ```
 ---
-cat /sys/fs/cgroup/cpu.max 
+cat /sys/fs/cgroup/cpu.max
 
 OUTPUT:
 100000 100000
 
 #Note:
-quota = 100000 µs = 100 ms  
+quota = 100000 µs = 100 ms
 period = 100000 µs = 100 ms
 
 ---
@@ -145,22 +145,22 @@ OUTPUT:
 usage_usec 53558 # CPU time
 user_usec 34843 # CPU time in user space
 system_usec 18715 # CPU time in kernel space
-nice_usec 0 
+nice_usec 0
 core_sched.force_idle_usec 0
-nr_periods 21 # The total number of CPU periods that have elapsed 
+nr_periods 21 # The total number of CPU periods that have elapsed
 nr_throttled 0 # The number of times the container was CPU throttled
 throttled_usec 0 # The total time the container was throttled (in microseconds)
 nr_bursts 0
 burst_usec 0
 ```
-![[miha-site/content/blog/blog_005/images/03.png]]
+![blog_005](images/03.png)
 
 ```
---- 
+---
 stress-ng --cpu 1 --timeout 10s
-cat /sys/fs/cgroup/cpu.stat  
+cat /sys/fs/cgroup/cpu.stat
 
-OUTPUT: 
+OUTPUT:
 usage_usec 10025053
 user_usec 9996608
 system_usec 28444
@@ -175,20 +175,20 @@ burst_usec 0
 ![blog_005](images/05.png)
 
 ```
---- 
+---
 stress-ng --cpu 2 --timeout 10s
-cat /sys/fs/cgroup/cpu.stat  
+cat /sys/fs/cgroup/cpu.stat
 
 OUTPUT:
-usage_usec 20050187  
-user_usec 20012132  
-system_usec 38055  
-nice_usec 0  
-core_sched.force_idle_usec 0  
-nr_periods 218  
-nr_throttled 100 # Throttle 100 time 
-throttled_usec 9911798 # ~9.9s 
-nr_bursts 0  
+usage_usec 20050187
+user_usec 20012132
+system_usec 38055
+nice_usec 0
+core_sched.force_idle_usec 0
+nr_periods 218
+nr_throttled 100 # Throttle 100 time
+throttled_usec 9911798 # ~9.9s
+nr_bursts 0
 burst_usec 0
 ```
 ![blog_005](images/06.png)
@@ -198,12 +198,12 @@ As you can see, when we run a stress test with 2 CPU workers, the process is thr
 stress-ng --cpu 2 --timeout 10s
 ---
 quota  = 100ms
-period = 100ms 
-runtime ≈ 10s 
+period = 100ms
+runtime ≈ 10s
 nr_throttled = 100
 ---
-nr_throttled ≈ 10s / 0.1s = 100 
-throttled_usec ≈ 9.9s 
+nr_throttled ≈ 10s / 0.1s = 100
+throttled_usec ≈ 9.9s
 ```
 # 4. Monitor chart: 50% CPU but why performance drop
 
