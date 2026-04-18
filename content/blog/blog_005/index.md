@@ -1,6 +1,6 @@
 ---
 title: "CPU quota: cpu_limit 2000Mi is 2 core ?"
-description: ""
+description: "Understand what CPU limits really mean in Docker and Kubernetes through Linux CPU time, quota/period, and throttling behavior."
 author: MinhBoo
 date: 2026-04-20T22:00:00+07:00
 draft: false
@@ -11,7 +11,13 @@ tags:
 categories:
   - Linux
 hideSummary: false
-summary: ""
+summary: "This post explains how Linux schedules CPU time, why CPU utilization differs from wall-clock time, and how cgroup quota/period translates to vCPU limits. With stress-ng examples, it shows why workloads can be throttled and lose performance even when monitoring charts look acceptable."
+cover:
+  image: "images/03.jpeg"
+  alt: ""
+  caption: ""
+  relative: false
+  hidden: false
 ---
 # 1. CPU switch context
 
