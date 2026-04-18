@@ -27,37 +27,38 @@ As shown in the diagram, each process is only allowed to use the CPU for a limit
 
 These switches happen so quickly that users often perceive the system as running many tasks in parallel, even though a single CPU core can only execute one process at a time.
 
-Như chúng ta đã thấy, không có một process nào thực sự được gán "1 core" hay "2 core" cả. Vậy khi các bạn dùng k8s hoặc container thường sẽ cho phép set cpu_limit là 1 core, 2 core. Vậy bản chất nó là gì, nó đang limit điều gì ?
+As we have seen, no process is actually assigned to a specific “1 core” or “2 cores.” However, when using **Kubernetes** or **containers**, we often set a **CPU limit** such as 1 core or 2 cores. So what does this really mean? What exactly is being limited?
 
 # 2. CPU Time
-Đây chính là keyword cần chúng ta tìm hiểu:
+These are the key concepts we need to understand:
 
-`wall-clock time (elapsed time)`: tổng thời gian process đã chạy
+`wall-clock time (elapsed time)`: the total time the process has been running
 
-`cpu time`: tổng thời gian mà process đó sử dụng **CPU**
+`cpu time`: the total time the process has actually **used the CPU**
+
 ![blog_005](images/02.jpeg)
 
-**Lưu ý:** Cả `wall-clock time` và `cpu time` đều không phải `time slice` được đề cập ở phần 1,  ở phần 1 chỉ là tôi muốn các bạn nắm được tổng quan việc cách mà các process sử dụng CPU.
+Note: Both wall-clock time and CPU time are not the same as the time slice mentioned in the previous section. The purpose of that section was only to give a high-level understanding of how processes use the CPU.
 
-**Ví dụ:**  
-- thread A: sử dụng CPU 10ms  
-- thread B: sử dụng CPU 50ms  
-  
-=> Tổng CPU time của process = 60ms  
-  
-**Lưu ý:**  
-CPU time là tổng thời gian thực thi trên tất cả CPU cores (không tính thời gian khác).  
-Nếu các thread chạy song song trên nhiều cores, CPU time vẫn được cộng dồn.  
-  
-CPU time được chia thành nhiều phần:
-- `user time`: thời gian thực thi trong user space (application)  
-- `system time`: thời gian CPU dùng trong kernel space để xử lý các system call, I/O,...
+Example:
+- **Thread A:** uses 10ms of CPU time
+- **Thread B:** uses 50ms of CPU time
+
+=> Total CPU time of the process = 60ms
+
+Note:
+CPU time is the total execution time across all CPU cores (excluding waiting time).
+If multiple threads run in parallel on different cores, their CPU time is still accumulated.
+
+CPU time can be broken down into several components:
+- `user_time:` time spent executing in **user space** (application code)
+- `system_time: `time spent in **kernel space** (system calls, I/O handling, etc.)
 - `nice_time`
-- `irq_time` 
-- `softirq_time` 
+- `irq_time`
+- `softirq_time`
 - `steal_time`
 
-Ok so if you used monitor tools, it have 1 chart about % CPU vậy nó chính xác là gì?
+So, when you use monitoring tools and see a "% CPU" chart, what does it actually represent?
 
 ```
 CPU % = CPU time / Wall clock time
@@ -67,19 +68,19 @@ Ref docs:
 - [Source for htop calculation](https://github.com/htop-dev/htop/blob/37d30a3a7d6c96da018c960d6b6bfe11cc718aa8/linux/Platform.c#L324)
 - [CPU Utilization - A useful metric?](https://www.green-coding.io/case-studies/cpu-utilization-usefulness/#:~:text=CPU%20utilization%20is%20defined%20as,on%20the%20idle%20thread.%E2%80%9D)
 # 3. `CPU quota` in Linux
-Nếu các bạn trước đây đã từng sử dụng qua `Docker` hoặc `K8s`, mỗi container chạy lên chúng ta đều có thể quy định được số CPU limit của từ container/pod, vậy thực chất là nó đang limit điều gì ở đây. 
+If you have used Docker or Kubernetes before, you may know that we can set a CPU limit for each container or pod. But what does this limit actually control?
 
-Trước tiên chúng ta cần quan tâm tới 2 giá trị sau:
-- `period`: Là khoảng thời gian lặp lại mà kernel dùng để kiểm soát CPU usage
-- `quota`: CPU time tối đa được dùng trong chu kỳ `period` time đó.
+First, we need to understand two important values:
+- `period`: the time window that the kernel uses to control **CPU usage**
+- `quota`: the maximum amount of **CPU time** that can be used within one period
 
 **Ví dụ:**
 - `period = 100000 µs = 100 ms`
 - `quota = 50000 µs = 50 ms`
 
-Mỗi `100ms`, process được dùng CPU tối đa `50ms`. Hiểu đơn dãn hơn là cứ sau `100ms` thì process sẽ được cấp `50ms` thời gian sử dụng CPU (CPU time).
+This means that in every `100ms`, the process can use up to `50ms` of **CPU time**.  In simpler terms, every `100ms`, the process is allowed to use `50ms` of **CPU time**.
 
-**Cách tính vCore:**
+**How to calculate vCPU (CPU cores):**
 ```
 vCPU (cores) = quota / period
 ```
@@ -87,25 +88,45 @@ vCPU (cores) = quota / period
 **Ví dụ:**
 - 200ms / 100ms = 2 core
 
-Khoan nhưng trong `100ms period` làm sao dùng CPU hết `200ms`? Đây là lúc process dùng nhiều hơn 1 core tại 1 thời điểm. Giả sử process đó có 2 thread mỗi thread sử dụng 1 core CPU, mỗi thread chạy `100ms` thì process đó vẫn dùng hết `200ms` ~ **100% CPU** được cấp. It cool !
+Wait, how can a process use `200ms` of CPU time within a `100ms` period?
+
+This happens when the process runs on multiple CPU cores at the same time.
+
+For example, if a process has 2 threads and each thread runs on a separate CPU core:
+- Thread A uses **50ms** of CPU time
+- Thread B uses **50ms** of CPU time
+
+=> Total CPU time = **100ms**
+
+This means the process has already used 100% of its CPU quota, even though only **50ms** of **wall-clock time** has passed.
+
+This is important:
+**Using multiple cores does not increase the CPU quota. It only makes the quota get used up faster.**
 
 **CPU throttle:**
 
-Hãy tưởng tượng rằng 1 tuần vợ bạn sẽ cho bạn `50 đồng` để tiêu vặt, và nếu mới đến giữa tuần thôi mà bạn đã hết tiền rồi thì những ngày sau đó bạn sẽ không được tiêu gì nữa! **CPU throttle** cũng hoạt động như vậy! 
+Imagine you are given a fixed budget of **50 dollars** each week. 
+If you spend it all in the **first few days,** you won’t be able to spend anything until the next week. 
+**CPU throttling** works in a similar way: 1 the `CPU quota` is used up, the process must wait until the next `period` to continue.
 
 Nếu chưa hết thời gian `period` để được cấp `quota` mới mà process đã sử dụng hết `quota` thì trong khoảng thời gian sau đó process sẽ không được sử dụng CPU nữa. Khi đó CPU sẽ throttle, bắt buộc phải chờ tới khi tới `period` time để được cấp `quota` mới.
+
+If a process consumes its entire `CPU quota` before the end of the current `period`, it will be prevented from running for the rest of that period. 
+This is known as **CPU throttling.** The process must wait until the next period begins, when the **quota is reset**, before it can run use  CPU again.
 ![blog_005](images/04.jpeg)
-**Ví dụ:**  
-- Nếu container dùng hết 50ms CPU chỉ trong 20ms đầu,  thì 80ms còn lại trong period sẽ bị block và không được chạy.
+**Example:**
+- If a container uses up `50ms` of **CPU time** within the first `20ms`, then it will be blocked for the remaining `80ms` of the period.
 
-**Đó chính là cách mà chúng ta limit CPU resource!**
+So, when we set a CPU limit in **Kubernetes** or **containers**, we are essentially limiting the **CPU quota.**
 
-Chúng ta cùng khởi tạo 1 container như sau:
+**That is how we limit CPU resources!** 
+
+Let create 1 container:
 ```sh
 docker run -it --rm --cpus="1.0" --entrypoint /bin/bash ghcr.io/colinianking/stress-ng
 ```
 
-Chúng ta có thể lấy thông tin `period` và `quota` của container:
+We can check `period` and `quota` of container:
 ```
 ---
 cat /sys/fs/cgroup/cpu.max 
@@ -171,7 +192,7 @@ nr_bursts 0
 burst_usec 0
 ```
 ![blog_005](images/06.png)
-Như các bạn đã thấy thì khi strees test với 2 cpu thì process đó bị  có 100 lần throttle, vậy tại sao lại là 100 lần. 
+As you can see, when we run a stress test with 2 CPU workers, the process is throttled around **100 times**. But why does this number come out to be about **100**?
 
 ```
 stress-ng --cpu 2 --timeout 10s
@@ -184,5 +205,5 @@ nr_throttled = 100
 nr_throttled ≈ 10s / 0.1s = 100 
 throttled_usec ≈ 9.9s 
 ```
-# 5. Những thông tin khác
-# 6. Document tham khảo 
+# 4. Monitor chart: 50% CPU but why performance drop
+
