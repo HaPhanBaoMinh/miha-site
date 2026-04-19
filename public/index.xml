@@ -11,7 +11,7 @@
     <lastBuildDate>Mon, 20 Apr 2026 22:00:00 +0700</lastBuildDate>
     <atom:link href="http://localhost:45779/miha-site/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>CPU quota: cpu_limit 2000Mi is 2 core ?</title>
+      <title>CPU quota: cpu_limit: 2000m is 2 core ?</title>
       <link>http://localhost:45779/miha-site/blog/blog_005/</link>
       <pubDate>Mon, 20 Apr 2026 22:00:00 +0700</pubDate><author>haphanbaominh.dev@gmail.com (MinhBoo)</author>
       <guid>http://localhost:45779/miha-site/blog/blog_005/</guid>
