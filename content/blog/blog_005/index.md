@@ -67,7 +67,7 @@ CPU time can be broken down into several components:
 So, when you use monitoring tools and see a "% CPU" chart, what does it actually represent?
 
 ```
-CPU % = CPU time / Wall clock time
+CPU % = CPU time / Wall clock time x vcore
 ```
 
 Ref docs:
@@ -211,3 +211,174 @@ throttled_usec ≈ 9.9s
 ```
 # 4. Monitor chart: 50% CPU but why performance drop
 
+We are going to build an application, but we will limit thread of process. We will give it 2 vCores and run a load test. Let's see what happens!
+
+We will use:
+- JS (JavaScript) 
+- Docker 
+- Wrk: to send traffic 
+- cAdvisor: for monitoring
+
+```js
+# server.js
+const http = require('http');
+const crypto = require('crypto');
+
+function cpuWork() {
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2('password', 'salt', 200000, 64, 'sha512', (err, key) => {
+      if (err) return reject(err);
+      resolve(key);
+    });
+  });
+}
+
+const server = http.createServer(async (req, res) => {
+  const start = Date.now();
+
+  try {
+    await cpuWork();
+    const duration = Date.now() - start;
+
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end(`Done in ${duration} ms\n`);
+  } catch (err) {
+    res.statusCode = 500;
+    res.end('Internal Server Error\n');
+  }
+});
+
+server.listen(3000, () => {
+  console.log('Server running on port 3000');
+  console.log('UV_THREADPOOL_SIZE =', process.env.UV_THREADPOOL_SIZE || '(default: 4)');
+});
+```
+From what I understand, when **Node.js** runs, it uses one main thread and a thread pool. 
+We can limit the size of this thread pool using the **UV_THREADPOOL_SIZE** variable.
+![blog_005](images/08.png)
+Doc refs:
+- [Thread pool work scheduling](https://docs.libuv.org/en/v1.x/threadpool.html)
+
+```yaml
+# docker-compose.yml
+services:
+  cadvisor:
+    image: ghcr.io/google/cadvisor:0.54.1
+    container_name: cadvisor
+    privileged: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /home/docker:/home/docker:ro
+      - /dev/disk:/dev/disk:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+```
+
+```Dockerfile
+# Dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY server.js .
+CMD ["node", "server.js"]
+```
+
+## **Case 1: Limit application thread**
+Build and start docker container:
+```sh 
+docker build -t cpu-quota .
+
+docker run -d --cpus="2.0" --name cpu-quota-1  \
+  -e UV_THREADPOOL_SIZE=1 \
+  -p 3000:3000 \
+  cpu-quota
+
+docker compose up # To start cAdvisor
+```
+
+Open **cAdvisor** at `localhost:8080` and find the `cpu-quota-1` container that we created.
+![blog_005](images/14.png)
+
+Checking the metrics before the load test:
+![blog_005](images/09.png)
+![blog_005](images/12.png)
+Exactly as we configured, this container is limited to 2 vCores.
+
+Load test with `wrk`
+```sh 
+wrk -t100 -c500 -d60s http://localhost:3000
+
+# t100: Create 100 thread to send request
+# c500: Create 500 TCP connrection in 1 time 
+# d60s: Test duration  
+```
+![blog_005](images/10.png)
+
+**Test result:** 
+![blog_005](images/15.png)
+As you can see, even though we gave the container 2 vCores, it only uses 1 vCore no matter how hard we push the load test.
+
+Ok, that is **cAdvisor**'s calculation. Now, let's verify it ourselves by reading the `cpu.stat` file.
+![blog_005](images/11.png)
+`period` = 100ms ,`quota`  = 200ms        
+`vcore` = `quota` / `period` = 200 / 100 = 2 (vcore)
+
+`wall-clock time` = `nr_periods` * `period` 
+= 783 * 100ms 
+= 78.3 s 
+
+`cpu_time` = usage_usec = 78.1s 
+
+`%CPU` = `cpu_time` / (`wall-clock * vcore`) 
+= 78.1 / 78.3 * 2 
+= **~50%** 
+## **Case 2: Increase limit application thread**
+```sh 
+docker run -d --cpus="2.0" \
+  -e UV_THREADPOOL_SIZE=4 \
+  -p 3000:3000 \
+  cpu-quota
+```
+
+Before load test:
+![blog_005](images/12.png)
+Đúng như những gì ta đã cấp, container này được limit 2vcore
+![blog_005](images/16.png)
+
+Load test with `wrk`
+```sh 
+wrk -t100 -c500 -d60s http://localhost:3000
+
+# t100: Create 100 thread to send request
+# c500: Create 500 TCP connrection in 1 time 
+# d60s: Test duration   
+```
+
+**Test result:** 
+![blog_005](images/17.png)
+
+Ok, that is **cAdvisor**'s calculation. Now, let's verify it ourselves by reading the `cpu.stat` file.
+![blog_005](images/13.png)
+
+`period` = 100ms, `quota` = 200ms  
+`vcore` = `quota` / `period` = 200 / 100 = 2 (vcore)  
+  
+`wall-clock time` = `nr_periods` * `period`  
+= 796 × 100ms  
+= 79.6s  
+  
+`cpu_time` = `usage_usec` ≈ 158.12s  
+  
+`%CPU` = `cpu_time` / `(wall-clock × vcore)`
+= 158.12 / (79.6 × 2)  
+= **~ 99.3%**
+## Conclusion
+From the 2 cases above, we can draw a hard truth: Giving more CPUs to a container doesn't mean the application will use them all
+
+Beware of monitoring blind spots!

@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/miha-site/livereload.js?mindelay=10&amp;v=2&amp;port=45779&amp;path=miha-site/livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>CPU quota: cpu_limit 2000Mi is 2 core ? | MinhBoo&#39;s Blog</title>
 <meta name="keywords" content="docker, linux, kubernetes">
-<meta name="description" content="1. CPU switch context
-First, I want everyone to understand how the CPU handles processes. Assume we have a single CPU with one core. In principle, at any given moment, only one process can use that CPU core for computation.
-That means processes must be scheduled to take turns using the CPU, and the Linux kernel scheduler is responsible for deciding that schedule, including how long each process gets to run.">
+<meta name="description" content="Understand what CPU limits really mean in Docker and Kubernetes through Linux CPU time, quota/period, and throttling behavior.">
 <meta name="author" content="MinhBoo">
-<link rel="canonical" href="https://haphanbaominh.github.io/miha-site/blog/blog_005/">
+<link rel="canonical" href="http://localhost:45779/miha-site/blog/blog_005/">
 <link crossorigin="anonymous" href="/miha-site/assets/css/stylesheet.aeb04085357f24835232aa89766467110fb6da019fa0a790d4d097b3949d7276.css" integrity="sha256-rrBAhTV/JINSMqqJdmRnEQ&#43;22gGfoKeQ1NCXs5SdcnY=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://haphanbaominh.github.io/miha-site/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://haphanbaominh.github.io/miha-site/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://haphanbaominh.github.io/miha-site/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://haphanbaominh.github.io/miha-site/apple-touch-icon.png">
-<link rel="mask-icon" href="https://haphanbaominh.github.io/miha-site/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:45779/miha-site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:45779/miha-site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:45779/miha-site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:45779/miha-site/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:45779/miha-site/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://haphanbaominh.github.io/miha-site/blog/blog_005/">
+<link rel="alternate" hreflang="en" href="http://localhost:45779/miha-site/blog/blog_005/">
 <noscript>
     <style>
         #theme-toggle,
@@ -57,79 +55,7 @@ That means processes must be scheduled to take turns using the CPU, and the Linu
         }
 
     </style>
-</noscript><meta property="og:url" content="https://haphanbaominh.github.io/miha-site/blog/blog_005/">
-  <meta property="og:site_name" content="MinhBoo&#39;s Blog">
-  <meta property="og:title" content="CPU quota: cpu_limit 2000Mi is 2 core ?">
-  <meta property="og:description" content="1. CPU switch context First, I want everyone to understand how the CPU handles processes. Assume we have a single CPU with one core. In principle, at any given moment, only one process can use that CPU core for computation.
-That means processes must be scheduled to take turns using the CPU, and the Linux kernel scheduler is responsible for deciding that schedule, including how long each process gets to run.">
-  <meta property="og:locale" content="en-us">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="blog">
-    <meta property="article:published_time" content="2026-04-20T22:00:00+07:00">
-    <meta property="article:modified_time" content="2026-04-20T22:00:00+07:00">
-    <meta property="article:tag" content="Docker">
-    <meta property="article:tag" content="Linux">
-    <meta property="article:tag" content="Kubernetes">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CPU quota: cpu_limit 2000Mi is 2 core ?">
-<meta name="twitter:description" content="1. CPU switch context
-First, I want everyone to understand how the CPU handles processes. Assume we have a single CPU with one core. In principle, at any given moment, only one process can use that CPU core for computation.
-That means processes must be scheduled to take turns using the CPU, and the Linux kernel scheduler is responsible for deciding that schedule, including how long each process gets to run.">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Blogs",
-      "item": "https://haphanbaominh.github.io/miha-site/blog/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "CPU quota: cpu_limit 2000Mi is 2 core ?",
-      "item": "https://haphanbaominh.github.io/miha-site/blog/blog_005/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "CPU quota: cpu_limit 2000Mi is 2 core ?",
-  "name": "CPU quota: cpu_limit 2000Mi is 2 core ?",
-  "description": "1. CPU switch context First, I want everyone to understand how the CPU handles processes. Assume we have a single CPU with one core. In principle, at any given moment, only one process can use that CPU core for computation.\nThat means processes must be scheduled to take turns using the CPU, and the Linux kernel scheduler is responsible for deciding that schedule, including how long each process gets to run.\n",
-  "keywords": [
-    "docker", "linux", "kubernetes"
-  ],
-  "articleBody": "1. CPU switch context First, I want everyone to understand how the CPU handles processes. Assume we have a single CPU with one core. In principle, at any given moment, only one process can use that CPU core for computation.\nThat means processes must be scheduled to take turns using the CPU, and the Linux kernel scheduler is responsible for deciding that schedule, including how long each process gets to run.\nAs for how the Linux kernel scheduler determines time slices and process priority, that is a deeper topic and something we will cover in a separate blog post.\nAs shown in the diagram, each process is only allowed to use the CPU for a limited window of time. Once that time slice is over, the CPU is handed off to another process. This actions is what we call a context switch.\nThese switches happen so quickly that users often perceive the system as running many tasks in parallel, even though a single CPU core can only execute one process at a time.\nAs we have seen, no process is actually assigned to a specific “1 core” or “2 cores.” However, when using Kubernetes or containers, we often set a CPU limit such as 1 core or 2 cores. So what does this really mean? What exactly is being limited?\n2. CPU Time These are the key concepts we need to understand:\nwall-clock time (elapsed time): the total time the process has been running\ncpu time: the total time the process has actually used the CPU\nNote: Both wall-clock time and CPU time are not the same as the time slice mentioned in the previous section. The purpose of that section was only to give a high-level understanding of how processes use the CPU.\nExample:\nThread A: uses 10ms of CPU time Thread B: uses 50ms of CPU time =\u003e Total CPU time of the process = 60ms\nNote: CPU time is the total execution time across all CPU cores (excluding waiting time). If multiple threads run in parallel on different cores, their CPU time is still accumulated.\nCPU time can be broken down into several components:\nuser_time: time spent executing in user space (application code) system_time: time spent in kernel space (system calls, I/O handling, etc.) nice_time irq_time softirq_time steal_time So, when you use monitoring tools and see a “% CPU” chart, what does it actually represent?\nCPU % = CPU time / Wall clock time Ref docs:\nSource for htop calculation CPU Utilization - A useful metric? 3. CPU quota in Linux If you have used Docker or Kubernetes before, you may know that we can set a CPU limit for each container or pod. But what does this limit actually control?\nFirst, we need to understand two important values:\nperiod: the time window that the kernel uses to control CPU usage quota: the maximum amount of CPU time that can be used within one period Example:\nperiod = 100000 µs = 100 ms quota = 50000 µs = 50 ms This means that in every 100ms, the process can use up to 50ms of CPU time. In simpler terms, every 100ms, the process is allowed to use 50ms of CPU time.\nHow to calculate vCPU (CPU cores):\nvCPU (cores) = quota / period Example:\n200ms / 100ms = 2 core Wait, how can a process use 200ms of CPU time within a 100ms period?\nThis happens when the process runs on multiple CPU cores at the same time.\nFor example: If a process has 2 threads and each thread runs on a separate CPU core:\nThread A uses 50ms of CPU time Thread B uses 50ms of CPU time =\u003e Total CPU time = 100ms\nThis means the process has already used 100% of its CPU quota, even though only 50ms of wall-clock time has passed.\nThis is important: Using multiple cores does not increase the CPU quota. It only makes the quota get used up faster.\nCPU throttle: Imagine you are given a fixed budget of 50 dollars each week. If you spend it all in the first few days, you won’t be able to spend anything until the next week. CPU throttling works in a similar way: 1 the CPU quota is used up, the process must wait until the next period to continue.\nIf a process consumes its entire CPU quota before the end of the current period, it will be prevented from running for the rest of that period. This is known as CPU throttling. The process must wait until the next period begins, when the quota is reset, before it can run use CPU again. Example:\nIf a container uses up 50ms of CPU time within the first 20ms, then it will be blocked for the remaining 80ms of the period. So, when we set a CPU limit in Kubernetes or containers, we are essentially limiting the CPU quota.\nThat is how we limit CPU resources!\nLet create 1 container:\ndocker run -it --rm --cpus=\"1.0\" --entrypoint /bin/bash ghcr.io/colinianking/stress-ng We can check period and quota of container:\n--- cat /sys/fs/cgroup/cpu.max OUTPUT: 100000 100000 #Note: quota = 100000 µs = 100 ms period = 100000 µs = 100 ms --- cat /sys/fs/cgroup/cpu.stat OUTPUT: usage_usec 53558 # CPU time user_usec 34843 # CPU time in user space system_usec 18715 # CPU time in kernel space nice_usec 0 core_sched.force_idle_usec 0 nr_periods 21 # The total number of CPU periods that have elapsed nr_throttled 0 # The number of times the container was CPU throttled throttled_usec 0 # The total time the container was throttled (in microseconds) nr_bursts 0 burst_usec 0 --- stress-ng --cpu 1 --timeout 10s cat /sys/fs/cgroup/cpu.stat OUTPUT: usage_usec 10025053 user_usec 9996608 system_usec 28444 nice_usec 0 core_sched.force_idle_usec 0 nr_periods 109 nr_throttled 0 throttled_usec 0 nr_bursts 0 burst_usec 0 --- stress-ng --cpu 2 --timeout 10s cat /sys/fs/cgroup/cpu.stat OUTPUT: usage_usec 20050187 user_usec 20012132 system_usec 38055 nice_usec 0 core_sched.force_idle_usec 0 nr_periods 218 nr_throttled 100 # Throttle 100 time throttled_usec 9911798 # ~9.9s nr_bursts 0 burst_usec 0 As you can see, when we run a stress test with 2 CPU workers, the process is throttled around 100 times. But why does this number come out to be about 100?\nstress-ng --cpu 2 --timeout 10s --- quota = 100ms period = 100ms runtime ≈ 10s nr_throttled = 100 --- nr_throttled ≈ 10s / 0.1s = 100 throttled_usec ≈ 9.9s 4. Monitor chart: 50% CPU but why performance drop ",
-  "wordCount" : "1068",
-  "inLanguage": "en",
-  "datePublished": "2026-04-20T22:00:00+07:00",
-  "dateModified": "2026-04-20T22:00:00+07:00",
-  "author":{
-    "@type": "Person",
-    "name": "MinhBoo"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://haphanbaominh.github.io/miha-site/blog/blog_005/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "MinhBoo's Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://haphanbaominh.github.io/miha-site/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -147,7 +73,7 @@ That means processes must be scheduled to take turns using the CPU, and the Linu
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://haphanbaominh.github.io/miha-site/" accesskey="h" title="MinhBoo&#39;s Blog (Alt + H)">MinhBoo&#39;s Blog</a>
+            <a href="http://localhost:45779/miha-site/" accesskey="h" title="MinhBoo&#39;s Blog (Alt + H)">MinhBoo&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -173,22 +99,22 @@ That means processes must be scheduled to take turns using the CPU, and the Linu
         </div>
         <ul id="menu">
             <li>
-                <a href="https://haphanbaominh.github.io/miha-site/" title="Home">
+                <a href="http://localhost:45779/miha-site/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://haphanbaominh.github.io/miha-site/blog/" title="Blog">
+                <a href="http://localhost:45779/miha-site/blog/" title="Blog">
                     <span>Blog</span>
                 </a>
             </li>
             <li>
-                <a href="https://haphanbaominh.github.io/miha-site/archives/" title="Archive">
+                <a href="http://localhost:45779/miha-site/archives/" title="Archive">
                     <span>Archive</span>
                 </a>
             </li>
             <li>
-                <a href="https://haphanbaominh.github.io/miha-site/search/" title="Search (Alt &#43; /)" accesskey=/>
+                <a href="http://localhost:45779/miha-site/search/" title="Search (Alt &#43; /)" accesskey=/>
                     <span>Search</span>
                 </a>
             </li>
@@ -203,10 +129,17 @@ That means processes must be scheduled to take turns using the CPU, and the Linu
     <h1 class="post-title entry-hint-parent">
       CPU quota: cpu_limit 2000Mi is 2 core ?
     </h1>
+    <div class="post-description">
+      Understand what CPU limits really mean in Docker and Kubernetes through Linux CPU time, quota/period, and throttling behavior.
+    </div>
     <div class="post-meta"><span title='2026-04-20 22:00:00 +0700 +07'>April 20, 2026</span>&nbsp;·&nbsp;MinhBoo
 
 </div>
-  </header> <div class="toc">
+  </header> 
+<figure class="entry-cover">
+            <img loading="eager" src="http://localhost:45779/miha-site/blog/blog_005/images/03.jpeg" alt="">
+        
+</figure><div class="toc">
     <details  open>
         <summary accesskey="c" title="(Alt + C)">
             <span class="details">Table of Contents</span>
@@ -220,8 +153,17 @@ That means processes must be scheduled to take turns using the CPU, and the Linu
                 <li>
                     <a href="#3-cpu-quota-in-linux" aria-label="3. CPU quota in Linux">3. CPU quota in Linux</a></li>
                 <li>
-                    <a href="#4-monitor-chart-50-cpu-but-why-performance-drop" aria-label="4. Monitor chart: 50% CPU but why performance drop">4. Monitor chart: 50% CPU but why performance drop</a>
+                    <a href="#4-monitor-chart-50-cpu-but-why-performance-drop" aria-label="4. Monitor chart: 50% CPU but why performance drop">4. Monitor chart: 50% CPU but why performance drop</a><ul>
+                        
+                <li>
+                    <a href="#case-1-limit-application-thread" aria-label="Case 1: Limit application thread">Case 1: Limit application thread</a></li>
+                <li>
+                    <a href="#case-2-increase-limit-application-thread" aria-label="Case 2: Increase limit application thread">Case 2: Increase limit application thread</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a>
                 </li>
+            </ul>
+            </li>
             </ul>
         </div>
     </details>
@@ -260,7 +202,7 @@ If multiple threads run in parallel on different cores, their CPU time is still 
 <li><code>steal_time</code></li>
 </ul>
 <p>So, when you use monitoring tools and see a &ldquo;% CPU&rdquo; chart, what does it actually represent?</p>
-<pre tabindex="0"><code>CPU % = CPU time / Wall clock time
+<pre tabindex="0"><code>CPU % = CPU time / Wall clock time x vcore
 </code></pre><p>Ref docs:</p>
 <ul>
 <li><a href="https://github.com/htop-dev/htop/blob/37d30a3a7d6c96da018c960d6b6bfe11cc718aa8/linux/Platform.c#L324">Source for htop calculation</a></li>
@@ -381,22 +323,161 @@ As you can see, when we run a stress test with 2 CPU workers, the process is thr
 </span></span><span style="display:flex;"><span>nr_throttled ≈ 10s / 0.1s <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
 </span></span><span style="display:flex;"><span>throttled_usec ≈ 9.9s
 </span></span></code></pre></div><h1 id="4-monitor-chart-50-cpu-but-why-performance-drop">4. Monitor chart: 50% CPU but why performance drop<a hidden class="anchor" aria-hidden="true" href="#4-monitor-chart-50-cpu-but-why-performance-drop">#</a></h1>
+<p>We are going to build an application, but we will limit thread of process. We will give it 2 vCores and run a load test. Let&rsquo;s see what happens!</p>
+<p>We will use:</p>
+<ul>
+<li>JS (JavaScript)</li>
+<li>Docker</li>
+<li>Wrk: to send traffic</li>
+<li>cAdvisor: for monitoring</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">js</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">http</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;http&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">crypto</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;crypto&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">cpuWork</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise((<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">crypto</span>.<span style="color:#a6e22e">pbkdf2</span>(<span style="color:#e6db74">&#39;password&#39;</span>, <span style="color:#e6db74">&#39;salt&#39;</span>, <span style="color:#ae81ff">200000</span>, <span style="color:#ae81ff">64</span>, <span style="color:#e6db74">&#39;sha512&#39;</span>, (<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">key</span>) =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">reject</span>(<span style="color:#a6e22e">err</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">key</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">server</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">createServer</span>(<span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">res</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">start</span> <span style="color:#f92672">=</span> Date.<span style="color:#a6e22e">now</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">cpuWork</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">duration</span> <span style="color:#f92672">=</span> Date.<span style="color:#a6e22e">now</span>() <span style="color:#f92672">-</span> <span style="color:#a6e22e">start</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">writeHead</span>(<span style="color:#ae81ff">200</span>, { <span style="color:#e6db74">&#39;Content-Type&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;text/plain&#39;</span> });
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">end</span>(<span style="color:#e6db74">`Done in </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">duration</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> ms\n`</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">statusCode</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">end</span>(<span style="color:#e6db74">&#39;Internal Server Error\n&#39;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">listen</span>(<span style="color:#ae81ff">3000</span>, () =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Server running on port 3000&#39;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;UV_THREADPOOL_SIZE =&#39;</span>, <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">UV_THREADPOOL_SIZE</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;(default: 4)&#39;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>From what I understand, when <strong>Node.js</strong> runs, it uses one main thread and a thread pool.
+We can limit the size of this thread pool using the <strong>UV_THREADPOOL_SIZE</strong> variable.
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/08.png">
+Doc refs:</p>
+<ul>
+<li><a href="https://docs.libuv.org/en/v1.x/threadpool.html">Thread pool work scheduling</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># docker-compose.yml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">cadvisor</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/google/cadvisor:0.54.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">cadvisor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">privileged</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8080:8080&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/:/rootfs:ro</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/run:/var/run:ro</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/run/docker.sock:/var/run/docker.sock:ro</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/sys:/sys:ro</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/home/docker:/home/docker:ro</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/dev/disk:/dev/disk:ro</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/sys/fs/cgroup:/sys/fs/cgroup:ro</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">devices</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/dev/kmsg</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">unless-stopped</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="display:flex;"><span><span style="color:#75715e"># Dockerfile</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">node:20-alpine</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">WORKDIR</span> <span style="color:#e6db74">/app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">COPY</span> server.js .<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;node&#34;</span>, <span style="color:#e6db74">&#34;server.js&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><h2 id="case-1-limit-application-thread"><strong>Case 1: Limit application thread</strong><a hidden class="anchor" aria-hidden="true" href="#case-1-limit-application-thread">#</a></h2>
+<p>Build and start docker container:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>docker build -t cpu-quota .
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>docker run -d --cpus<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2.0&#34;</span> --name cpu-quota-1  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  -e UV_THREADPOOL_SIZE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  -p 3000:3000 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  cpu-quota
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>docker compose up <span style="color:#75715e"># To start cAdvisor</span>
+</span></span></code></pre></div><p>Open <strong>cAdvisor</strong> at <code>localhost:8080</code> and find the <code>cpu-quota-1</code> container that we created.
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/14.png"></p>
+<p>Checking the metrics before the load test:
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/09.png">
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/12.png">
+Exactly as we configured, this container is limited to 2 vCores.</p>
+<p>Load test with <code>wrk</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wrk -t100 -c500 -d60s http://localhost:3000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># t100: Create 100 thread to send request</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># c500: Create 500 TCP connrection in 1 time </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># d60s: Test duration  </span>
+</span></span></code></pre></div><p><img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/10.png"></p>
+<p><strong>Test result:</strong>
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/15.png">
+As you can see, even though we gave the container 2 vCores, it only uses 1 vCore no matter how hard we push the load test.</p>
+<p>Ok, that is <strong>cAdvisor</strong>&rsquo;s calculation. Now, let&rsquo;s verify it ourselves by reading the <code>cpu.stat</code> file.
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/11.png">
+<code>period</code> = 100ms ,<code>quota</code>  = 200ms     <br>
+<code>vcore</code> = <code>quota</code> / <code>period</code> = 200 / 100 = 2 (vcore)</p>
+<p><code>wall-clock time</code> = <code>nr_periods</code> * <code>period</code>
+= 783 * 100ms
+= 78.3 s</p>
+<p><code>cpu_time</code> = usage_usec = 78.1s</p>
+<p><code>%CPU</code> = <code>cpu_time</code> / (<code>wall-clock * vcore</code>)
+= 78.1 / 78.3 * 2
+= <strong>~50%</strong></p>
+<h2 id="case-2-increase-limit-application-thread"><strong>Case 2: Increase limit application thread</strong><a hidden class="anchor" aria-hidden="true" href="#case-2-increase-limit-application-thread">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>docker run -d --cpus<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2.0&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  -e UV_THREADPOOL_SIZE<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  -p 3000:3000 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>  cpu-quota
+</span></span></code></pre></div><p>Before load test:
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/12.png">
+Đúng như những gì ta đã cấp, container này được limit 2vcore
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/16.png"></p>
+<p>Load test with <code>wrk</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wrk -t100 -c500 -d60s http://localhost:3000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># t100: Create 100 thread to send request</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># c500: Create 500 TCP connrection in 1 time </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># d60s: Test duration   </span>
+</span></span></code></pre></div><p><strong>Test result:</strong>
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/17.png"></p>
+<p>Ok, that is <strong>cAdvisor</strong>&rsquo;s calculation. Now, let&rsquo;s verify it ourselves by reading the <code>cpu.stat</code> file.
+<img alt="blog_005" loading="lazy" src="/miha-site/blog/blog_005/images/13.png"></p>
+<p><code>period</code> = 100ms, <code>quota</code> = 200ms<br>
+<code>vcore</code> = <code>quota</code> / <code>period</code> = 200 / 100 = 2 (vcore)</p>
+<p><code>wall-clock time</code> = <code>nr_periods</code> * <code>period</code><br>
+= 796 × 100ms<br>
+= 79.6s</p>
+<p><code>cpu_time</code> = <code>usage_usec</code> ≈ 158.12s</p>
+<p><code>%CPU</code> = <code>cpu_time</code> / <code>(wall-clock × vcore)</code>
+= 158.12 / (79.6 × 2)<br>
+= <strong>~ 99.3%</strong></p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>From the 2 cases above, we can draw a hard truth: Giving more CPUs to a container doesn&rsquo;t mean the application will use them all</p>
+<p>Beware of monitoring blind spots!</p>
 
 
   </div>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://haphanbaominh.github.io/miha-site/tags/docker/">Docker</a></li>
-      <li><a href="https://haphanbaominh.github.io/miha-site/tags/linux/">Linux</a></li>
-      <li><a href="https://haphanbaominh.github.io/miha-site/tags/kubernetes/">Kubernetes</a></li>
+      <li><a href="http://localhost:45779/miha-site/tags/docker/">Docker</a></li>
+      <li><a href="http://localhost:45779/miha-site/tags/linux/">Linux</a></li>
+      <li><a href="http://localhost:45779/miha-site/tags/kubernetes/">Kubernetes</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="https://haphanbaominh.github.io/miha-site/">MinhBoo&#39;s Blog</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:45779/miha-site/">MinhBoo&#39;s Blog</a></span> · 
 
     <span>
         Powered by
