@@ -12,6 +12,12 @@ categories:
   - Rust
 hideSummary: false
 summary: This post explains how TF-IDF ranks log lines, how an inverted index answers "which lines contain this word" without scanning the file, and how to build both in Rust with SQLite. On 1 million real log lines, the search goes from 1.7 s for a full scan to 5 ms, after one surprising fix in the storage layout.
+cover:
+  image: images/08-idf.png
+  alt: "kernel vs ciod: idf"
+  caption: ""
+  relative: false
+  hidden: false
 ---
 # 1. The problem
 
