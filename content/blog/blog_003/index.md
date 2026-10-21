@@ -9,7 +9,7 @@ categories: ["Linux Packaging", "DevOps Guides"]
 hideSummary: false
 summary: "Stop sending raw .deb files. Package once, upload to Launchpad, and let users install your app with apt install."
 cover:
-    image: ""
+    image: images/cover.png
     alt: ""
     caption: ""
     relative: false
