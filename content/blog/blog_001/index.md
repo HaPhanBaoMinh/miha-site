@@ -9,7 +9,7 @@ categories: ["Tech"]
 hideSummary: false
 summary: "Ever wondered what happens when you run a Docker container? Let's dive into the Linux magic behind namespaces, cgroups, and overlay filesystems that make it all possible."
 cover:
-    image: ""
+    image: images/01.png
     alt: ""
     caption: ""
     relative: false

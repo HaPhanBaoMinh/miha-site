@@ -9,7 +9,7 @@ categories: ["Tech"]
 hideSummary: false
 summary: "No more kubectl apply chaos. Let's build a fun GitOps workflow with ArgoCD + ApplicationSet, starting from minikube to full infra control."
 cover:
-    image: ""
+    image: images/cover.png
     alt: ""
     caption: ""
     relative: false
