@@ -90,13 +90,19 @@ We divide by the line length so that a long line does not win just because it ha
 
 ## 3.3 IDF: how rare across all lines
 
-![blog_006](images/08-idf.png)
+First we need **DF** (document frequency): **in how many lines does the word appear?** We do not count how many times the word is written, only how many lines have it. A line that contains the word twice still counts once.
 
-**DF** (document frequency) is the number of lines that contain the word. **IDF** turns it into "how rare", with `N` the total number of lines:
+![blog_006](images/25-df-concept.png)
+
+Then **IDF** turns DF into "how rare", with `N` the total number of lines:
 
 ```text
 idf(term) = ln(N / df(term))
 ```
+
+A word in every line gets `ln(N / N) = 0`. A word in only one line gets the highest idf:
+
+![blog_006](images/08-idf.png)
 
 `ln` keeps the numbers small: a word 1,000 times rarer scores higher, but not 1,000 times higher. On our real 1 million lines:
 
